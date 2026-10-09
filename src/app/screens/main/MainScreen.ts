@@ -174,4 +174,8 @@ export class MainScreen extends Container implements AppScreen {
       engine().navigation.presentPopup(PausePopup);
     }
   }
+
+  static async show() {
+    return engine().navigation.showScreen(MainScreen);
+  }
 }
