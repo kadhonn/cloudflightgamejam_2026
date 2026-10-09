@@ -73,8 +73,10 @@ export class MainScreen extends Container implements AppScreen {
 
     this.exampleScreenButton = new Button({
       text: "Example Screen",
-    })
-    this.exampleScreenButton.onPress.connect(() => engine().navigation.showScreen(ExampleScreen));
+    });
+    this.exampleScreenButton.onPress.connect(() =>
+      engine().navigation.showScreen(ExampleScreen),
+    );
     this.mainMenuContainer.addChild(this.exampleScreenButton);
 
     this.addButton = new Button({

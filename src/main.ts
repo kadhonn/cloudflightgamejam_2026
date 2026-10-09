@@ -23,10 +23,12 @@ setEngine(engine);
   });
 
   // temporary asset preload
-  await Assets.load([{
-    alias: 'her',
-    src: "https://pixijs.com/assets/bunny.png"
-  }])
+  await Assets.load([
+    {
+      alias: "her",
+      src: "https://pixijs.com/assets/bunny.png",
+    },
+  ]);
 
   // Initialize the user settings
   userSettings.init();
