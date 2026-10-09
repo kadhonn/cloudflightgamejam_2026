@@ -2,9 +2,10 @@ import { CircularProgressBar } from "@pixi/ui";
 import { animate } from "motion";
 import type { ObjectTarget } from "motion/react";
 import { Container, Sprite, Texture } from "pixi.js";
+import type { AppScreen } from "../../engine/navigation/navigation.ts";
 
 /** Screen shown while loading assets */
-export class LoadScreen extends Container {
+export class LoadScreen extends Container implements AppScreen {
   /** Assets bundles required by this screen */
   public static assetBundles = ["preload"];
   /** The PixiJS logo */
