@@ -1,0 +1,17 @@
+[tools]
+node = "24"
+
+[tasks.setup]
+run = "npm ci"
+
+[tasks.start]
+run = "npm run dev"
+depends = ["setup"]
+
+[tasks.build]
+run = "npm run build"
+depends = ["setup"]
+
+[tasks.lint]
+run = "npm run lint"
+depends = ["setup"]
