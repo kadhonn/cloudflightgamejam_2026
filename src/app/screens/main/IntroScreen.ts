@@ -1,5 +1,4 @@
-import { Container,
-  Text, TextStyle } from "pixi.js";
+import { Container, Text, TextStyle } from "pixi.js";
 import { MainScreen } from "./MainScreen.ts";
 import type { AppScreen } from "../../../engine/navigation/navigation.ts";
 
