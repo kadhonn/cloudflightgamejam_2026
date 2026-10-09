@@ -10,15 +10,19 @@ import { SettingsPopup } from "../../popups/SettingsPopup.ts";
 import { Button } from "../../ui/Button.ts";
 
 import { Bouncer } from "./Bouncer.ts";
+import type { AppScreen } from "../../../engine/navigation/navigation.ts";
+import { ExampleScreen } from "./ExampleScreen.ts";
 
 /** The screen that holds the app */
-export class MainScreen extends Container {
+export class MainScreen extends Container implements AppScreen {
   /** Assets bundles required by this screen */
   public static assetBundles = ["main"];
 
   public mainContainer: Container;
+  private mainMenuContainer: Container;
   private pauseButton: FancyButton;
   private settingsButton: FancyButton;
+  private exampleScreenButton: FancyButton;
   private addButton: FancyButton;
   private removeButton: FancyButton;
   private bouncer: Bouncer;
@@ -29,6 +33,8 @@ export class MainScreen extends Container {
 
     this.mainContainer = new Container();
     this.addChild(this.mainContainer);
+    this.mainMenuContainer = new Container();
+    this.addChild(this.mainMenuContainer);
     this.bouncer = new Bouncer();
 
     const buttonAnimations = {
@@ -64,6 +70,12 @@ export class MainScreen extends Container {
       engine().navigation.presentPopup(SettingsPopup),
     );
     this.addChild(this.settingsButton);
+
+    this.exampleScreenButton = new Button({
+      text: "Example Screen",
+    })
+    this.exampleScreenButton.onPress.connect(() => engine().navigation.showScreen(ExampleScreen));
+    this.mainMenuContainer.addChild(this.exampleScreenButton);
 
     this.addButton = new Button({
       text: "Add",
@@ -114,6 +126,8 @@ export class MainScreen extends Container {
 
     this.mainContainer.x = centerX;
     this.mainContainer.y = centerY;
+    this.mainMenuContainer.x = centerX;
+    this.mainMenuContainer.y = centerY;
     this.pauseButton.x = 30;
     this.pauseButton.y = 30;
     this.settingsButton.x = width - 30;

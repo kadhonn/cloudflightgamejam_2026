@@ -9,6 +9,7 @@ import { CreationEngine } from "./engine/engine.ts";
  * Importing these modules will automatically register there plugins with the engine.
  */
 import "@pixi/sound";
+import { Assets } from "pixi.js";
 // import "@esotericsoftware/spine-pixi-v8";
 
 // Create a new creation engine instance
@@ -21,6 +22,12 @@ setEngine(engine);
     background: "#1E1E1E",
     resizeOptions: { minWidth: 768, minHeight: 1024, letterbox: false },
   });
+
+  // temporary asset preload
+  await Assets.load([{
+    alias: 'her',
+    src: "https://pixijs.com/assets/bunny.png"
+  }])
 
   // Initialize the user settings
   userSettings.init();
