@@ -1,5 +1,6 @@
 import { setEngine } from "./app/getEngine.ts";
 import { LoadScreen } from "./app/screens/LoadScreen.ts";
+import { IntroScreen } from "./app/screens/main/IntroScreen.ts";
 import { MainScreen } from "./app/screens/main/MainScreen.ts";
 import { userSettings } from "./app/utils/userSettings.ts";
 import { CreationEngine } from "./engine/engine.ts";
@@ -27,5 +28,5 @@ setEngine(engine);
   // Show the load screen
   await engine.navigation.showScreen(LoadScreen);
   // Show the main screen once the load screen is dismissed
-  await engine.navigation.showScreen(MainScreen);
+  await engine.navigation.showScreen(IntroScreen);
 })();
