@@ -1,4 +1,11 @@
-import {Container, type ContainerOptions, Graphics, Sprite} from "pixi.js";
+import {
+    Assets,
+    CanvasSource,
+    Container,
+    type ContainerOptions,
+    Sprite,
+    Texture,
+} from "pixi.js";
 
 enum Masks {
     CIRCLE,
@@ -6,42 +13,31 @@ enum Masks {
 }
 
 export class FaceContainer extends Container {
-
-    public sprite: Sprite;
-    public masks: Graphics[];
+    public imageSource: CanvasSource;
     public currentMaskChosen: Masks | null = null;
 
     constructor(options?: ContainerOptions<Container>) {
         super(options);
 
-        this.sprite = Sprite.from("face.png");
-        this.sprite.anchor = 0.5;
-        this.sprite.scale = 6;
-        this.sprite.x = 0;
-        this.sprite.y = 0;
-        this.addChild(this.sprite);
-
-        this.masks = [];
+        this.imageSource = new CanvasSource({
+            resource: new OffscreenCanvas(128, 128)
+        });
+        this.imageSource.scaleMode = "nearest";
+        this.resetMasks();
+        let sprite = Sprite.from(Texture.from(this.imageSource));
+        sprite.anchor = 0.5;
+        sprite.scale = 6;
+        sprite.x = 0;
+        sprite.y = 0;
+        this.addChild(sprite);
     }
 
     red() {
-        this.paintCurrentMask(0xff0000);
+        this.paintCurrentMask("#ff0000");
     }
 
     blue() {
-        this.paintCurrentMask(0x0000ff);
-    }
-
-    resetMasks() {
-        for (let mask of this.masks) {
-            this.removeChild(mask);
-        }
-        this.masks = [];
-    }
-
-    private addMask(graphics: Graphics) {
-        this.masks.push(graphics);
-        this.addChild(graphics);
+        this.paintCurrentMask("#0000ff");
     }
 
     square() {
@@ -52,11 +48,40 @@ export class FaceContainer extends Container {
         this.currentMaskChosen = Masks.CIRCLE;
     }
 
-    private paintCurrentMask(color: number) {
+    resetMasks() {
+        let ctx = this.getContext2D();
+        ctx.clearRect(0, 0, 128, 128);
+        ctx.drawImage(this.getFaceImageBitmap(), 0, 0);
+        this.update();
+    }
+
+    private getContext2D() {
+        return this.imageSource.context2D;
+    }
+
+    private getFaceImageBitmap(): ImageBitmap {
+        return this.getImageBitmap("face.png");
+    }
+
+    private getImageBitmap(assetName: string) {
+        return Assets.get(assetName).source.resource;
+    }
+
+    private paintCurrentMask(color: string) {
+        let ctx = this.getContext2D();
+        ctx.fillStyle = color;
         if (this.currentMaskChosen === Masks.CIRCLE) {
-            this.addMask(new Graphics().circle(0, 0, 60,).fill(color));
+            ctx.beginPath();
+            ctx.arc(64, 64, 30, 0, 2 * Math.PI);
+            ctx.fill()
         } else if (this.currentMaskChosen === Masks.SQUARE) {
-            this.addMask(new Graphics().rect(-50, -50, 100, 100).fill(color));
+            console.log("painting square color " + color);
+            ctx.fillRect(0, 0, 50, 50);
         }
+        this.update();
+    }
+
+    private update() {
+        this.imageSource.update()
     }
 }
