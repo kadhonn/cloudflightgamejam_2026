@@ -4,6 +4,10 @@ export function wallpapers(col: number, row: number): Texture {
 	return loadTextureFromAsset("wallpapers.png", 16, 16, col, row);
 }
 
+export function wallpapersDouble(col: number, row: number): Texture {
+	return loadTextureFromAsset("wallpapers.png", 16, 32, col, row);
+}
+
 function loadTextureFromAsset(
 	asset: string,
 	width: number,
