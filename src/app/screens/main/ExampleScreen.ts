@@ -23,10 +23,17 @@ export class ExampleScreen extends Container implements AppScreen {
 		this.controller = new CharacterController();
 	}
 
+	static assetBundles = ["main"];
+
 	async show() {
 		this.controller.activate();
 		this.her.show(this.viewContainer);
 		engine().audio.bgm.current?.stop();
+	}
+
+	resize(width: number, height: number): void {
+		this.viewContainer.x = width / 2;
+		this.viewContainer.y = height / 2;
 	}
 
 	async hide() {
