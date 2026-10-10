@@ -7,14 +7,20 @@ import {
     Texture,
 } from "pixi.js";
 
-enum Masks {
-    CIRCLE,
-    SQUARE,
-}
+
+export type Mask = { label: string, assetName: string }
+export const MASKS: Mask[] = [
+    {label: "Lips", assetName: "mask_lips.png"},
+    {label: "Eye Circles", assetName: "mask_eyecircles.png"},
+    {label: "Hair", assetName: "mask_hair.png"},
+]
+
+type AppliedMask = { color: string, masks: Mask[] }
 
 export class FaceContainer extends Container {
     public imageSource: CanvasSource;
-    public currentMaskChosen: Masks | null = null;
+    public appliedMasks: AppliedMask[] = [];
+    public currentMaskChosen: Mask[] = [];
 
     constructor(options?: ContainerOptions<Container>) {
         super(options);
@@ -29,34 +35,36 @@ export class FaceContainer extends Container {
         sprite.scale = 6;
         sprite.x = 0;
         sprite.y = 0;
+        sprite.interactive = true;
+        sprite.on("click", () => this.removeUpperMask());
         this.addChild(sprite);
+
     }
 
     red() {
-        this.paintCurrentMask("#ff0000");
+        this.applyCurrentMasks("#ff0000");
     }
 
     blue() {
-        this.paintCurrentMask("#0000ff");
+        this.applyCurrentMasks("#0000ff");
     }
 
-    square() {
-        this.currentMaskChosen = Masks.SQUARE;
-    }
-
-    circle() {
-        this.currentMaskChosen = Masks.CIRCLE;
+    chosenMask(mask: Mask) {
+        if (this.currentMaskChosen.indexOf(mask) === -1) {
+            this.currentMaskChosen.push(mask);
+            this.updatePicture();
+        }
     }
 
     resetMasks() {
-        let ctx = this.getContext2D();
-        ctx.clearRect(0, 0, 128, 128);
-        ctx.drawImage(this.getFaceImageBitmap(), 0, 0);
-        this.update();
+        this.currentMaskChosen = [];
+        this.appliedMasks = [];
+        this.resetPicture();
+        this.updateImageSource();
     }
 
     private getContext2D() {
-        return this.imageSource.context2D;
+        return this.imageSource.context2D as any as OffscreenCanvasRenderingContext2D;
     }
 
     private getFaceImageBitmap(): ImageBitmap {
@@ -67,21 +75,73 @@ export class FaceContainer extends Container {
         return Assets.get(assetName).source.resource;
     }
 
-    private paintCurrentMask(color: string) {
-        let ctx = this.getContext2D();
-        ctx.fillStyle = color;
-        if (this.currentMaskChosen === Masks.CIRCLE) {
-            ctx.beginPath();
-            ctx.arc(64, 64, 30, 0, 2 * Math.PI);
-            ctx.fill()
-        } else if (this.currentMaskChosen === Masks.SQUARE) {
-            console.log("painting square color " + color);
-            ctx.fillRect(0, 0, 50, 50);
+    private updatePicture() {
+        if (!this.currentMaskChosen) {
+            return;
         }
-        this.update();
+        this.resetPicture();
+
+
+        let allMasksCanvas = new OffscreenCanvas(128, 128);
+        let allMasksContext = allMasksCanvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
+
+        for (let appliedMask of this.appliedMasks) {
+            let appliedMaskCanvas = new OffscreenCanvas(128, 128);
+            let appliedMaskContext = appliedMaskCanvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
+            for (let mask of appliedMask.masks) {
+                appliedMaskContext.drawImage(this.getImageBitmap(mask.assetName), 0, 0)
+            }
+            appliedMaskContext.globalCompositeOperation = "xor";
+            appliedMaskContext.fillRect(0, 0, 128, 128)
+            appliedMaskContext.globalCompositeOperation = "source-in";
+            appliedMaskContext.fillStyle = appliedMask.color;
+            appliedMaskContext.fillRect(0, 0, 128, 128)
+
+            allMasksContext.drawImage(appliedMaskCanvas, 0, 0, 128, 128);
+        }
+
+        let ctx = this.getContext2D();
+
+        allMasksContext.globalCompositeOperation = "destination-in";
+        allMasksContext.drawImage(ctx.canvas, 0, 0);
+
+        ctx.save();
+        ctx.globalAlpha = 0.5;
+        ctx.drawImage(allMasksCanvas, 0, 0)
+        ctx.restore();
+
+        let currentChosenMaskCanvas = new OffscreenCanvas(128, 128);
+        let currentChosenContext = currentChosenMaskCanvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
+        for (let mask of this.currentMaskChosen) {
+            currentChosenContext.drawImage(this.getImageBitmap(mask.assetName), 0, 0)
+        }
+        ctx.save();
+        ctx.globalAlpha = 0.8;
+        ctx.drawImage(currentChosenMaskCanvas, 0, 0)
+        ctx.restore();
+
+        this.updateImageSource();
     }
 
-    private update() {
+    private updateImageSource() {
         this.imageSource.update()
+    }
+
+    private removeUpperMask() {
+        if (this.currentMaskChosen.length !== 0) {
+            this.currentMaskChosen.pop();
+            this.updatePicture();
+        }
+    }
+
+    private resetPicture() {
+        let ctx = this.getContext2D();
+        ctx.clearRect(0, 0, 128, 128);
+        ctx.drawImage(this.getFaceImageBitmap(), 0, 0);
+    }
+
+    private applyCurrentMasks(color: string) {
+        this.appliedMasks.push({color, masks: [...this.currentMaskChosen]});
+        this.updatePicture();
     }
 }

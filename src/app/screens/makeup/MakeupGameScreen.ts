@@ -2,7 +2,7 @@ import {Container, Text, type Ticker} from "pixi.js";
 
 import type {AppScreen} from "../../../engine/navigation/navigation.ts";
 import {Button} from "../../ui/Button.ts";
-import {FaceContainer} from "./FaceContainer.ts";
+import {FaceContainer, MASKS} from "./FaceContainer.ts";
 
 /** The screen that holds the app */
 export class MakeupGameScreen extends Container implements AppScreen {
@@ -36,8 +36,9 @@ export class MakeupGameScreen extends Container implements AppScreen {
         this.addColorButton("Blue", () => this.faceContainer.blue());
 
         this.maskButtons = [];
-        this.addMaskButton("Square", () => this.faceContainer.square());
-        this.addMaskButton("Circle", () => this.faceContainer.circle());
+        for(let mask of MASKS){
+            this.addMaskButton(mask.label, () => this.faceContainer.chosenMask(mask));
+        }
 
         this.resetButton = new Button({
             text: "Reset",
