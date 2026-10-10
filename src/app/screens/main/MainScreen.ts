@@ -12,6 +12,7 @@ import { Button } from "../../ui/Button.ts";
 import { Bouncer } from "./Bouncer.ts";
 import type { AppScreen } from "../../../engine/navigation/navigation.ts";
 import { ExampleScreen } from "./ExampleScreen.ts";
+import {MakeupGameScreen} from "../makeup/MakeupGameScreen.ts";
 
 /** The screen that holds the app */
 export class MainScreen extends Container implements AppScreen {
@@ -23,6 +24,7 @@ export class MainScreen extends Container implements AppScreen {
   private pauseButton: FancyButton;
   private settingsButton: FancyButton;
   private exampleScreenButton: FancyButton;
+  private makeupScreenButton: FancyButton;
   private addButton: FancyButton;
   private removeButton: FancyButton;
   private bouncer: Bouncer;
@@ -78,6 +80,15 @@ export class MainScreen extends Container implements AppScreen {
       engine().navigation.showScreen(ExampleScreen),
     );
     this.mainMenuContainer.addChild(this.exampleScreenButton);
+
+    this.makeupScreenButton = new Button({
+      text: "Makeup Screen",
+    });
+    this.makeupScreenButton.y = 100;
+    this.makeupScreenButton.onPress.connect(() =>
+      engine().navigation.showScreen(MakeupGameScreen),
+    );
+    this.mainMenuContainer.addChild(this.makeupScreenButton);
 
     this.addButton = new Button({
       text: "Add",
