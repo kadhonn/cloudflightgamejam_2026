@@ -5,6 +5,7 @@ import { engine } from "../getEngine.ts";
 const KEY_VOLUME_MASTER = "volume-master";
 const KEY_VOLUME_BGM = "volume-bgm";
 const KEY_VOLUME_SFX = "volume-sfx";
+const KEY_SKIP_INTRO = "skip-intro";
 
 /**
  * Persistent user settings of volumes.
@@ -47,6 +48,14 @@ class UserSettings {
 	public setSfxVolume(value: number) {
 		engine().audio.sfx.setVolume(value);
 		storage.setNumber(KEY_VOLUME_SFX, value);
+	}
+
+	get skipIntro(): boolean {
+		return storage.getBool(KEY_SKIP_INTRO) ?? false;
+	}
+
+	set skipIntro(skipIntro: boolean) {
+		storage.setBool(KEY_SKIP_INTRO, skipIntro);
 	}
 }
 

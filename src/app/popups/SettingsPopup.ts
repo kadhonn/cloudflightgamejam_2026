@@ -1,7 +1,13 @@
-import { List } from "@pixi/ui";
+import { CheckBox, List } from "@pixi/ui";
 import { animate } from "motion";
-import type { Text } from "pixi.js";
-import { BlurFilter, Container, Sprite, Texture } from "pixi.js";
+import {
+	BlurFilter,
+	Container,
+	Graphics,
+	Sprite,
+	type Text,
+	Texture,
+} from "pixi.js";
 
 import { engine } from "../getEngine.ts";
 import { Button } from "../ui/Button.ts";
@@ -32,6 +38,7 @@ export class SettingsPopup extends Container {
 	private bgmSlider: VolumeSlider;
 	/** Slider that changes sound effects volume */
 	private sfxSlider: VolumeSlider;
+	private skipIntroCheckbox: CheckBox;
 
 	constructor() {
 		super();
@@ -44,7 +51,7 @@ export class SettingsPopup extends Container {
 		this.panel = new Container();
 		this.addChild(this.panel);
 
-		this.panelBase = new RoundedBox({ height: 425 });
+		this.panelBase = new RoundedBox({ height: 550 });
 		this.panel.addChild(this.panelBase);
 
 		this.title = new Label({
@@ -95,6 +102,19 @@ export class SettingsPopup extends Container {
 			userSettings.setSfxVolume(v / 100);
 		});
 		this.layout.addChild(this.sfxSlider);
+		const checked = new Graphics()
+			.circle(0, 16, 16)
+			.stroke("black")
+			.fill("black");
+		const unchecked = new Graphics().circle(0, 16, 16).stroke("black");
+		this.skipIntroCheckbox = new CheckBox({
+			text: "Skip Intro?",
+			style: { checked, unchecked },
+		});
+		this.skipIntroCheckbox.onCheck.connect((skipIntro) => {
+			userSettings.skipIntro = skipIntro;
+		});
+		this.layout.addChild(this.skipIntroCheckbox);
 	}
 
 	/** Resize the popup, fired whenever window size changes */
@@ -110,6 +130,7 @@ export class SettingsPopup extends Container {
 		this.masterSlider.value = userSettings.getMasterVolume() * 100;
 		this.bgmSlider.value = userSettings.getBgmVolume() * 100;
 		this.sfxSlider.value = userSettings.getSfxVolume() * 100;
+		this.skipIntroCheckbox.checked = userSettings.skipIntro;
 	}
 
 	/** Present the popup, animated */

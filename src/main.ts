@@ -38,6 +38,9 @@ setEngine(engine);
 	// Show the load screen
 	await engine.navigation.showScreen(LoadScreen);
 	// Show the main screen once the load screen is dismissed
-	//await engine.navigation.showScreen(IntroScreen);
-	await engine.navigation.showScreen(MainScreen);
+	if (userSettings.skipIntro) {
+		await engine.navigation.showScreen(MainScreen);
+	} else {
+		await engine.navigation.showScreen(IntroScreen);
+	}
 })();
