@@ -6,25 +6,35 @@ export enum FloorType {
 }
 
 export class FloorTile extends TilingSprite {
-	constructor(
-		floorType: FloorType,
-		x: number,
-		y: number,
-		width: number,
-		height: number,
-	) {
+	constructor(floorType: FloorType) {
 		super();
 		this.texture = this.getTexture(floorType);
-		this.x = x;
-		this.y = y;
-		this.width = width * 16 * 4;
-		this.height = height * 16 * 4;
-		this.tileScale = 4;
+		this.scale = 4;
+		this.width = this.texture.width;
+		this.height = this.texture.height;
 	}
 
-	public updatePosition(x: number, y: number) {
+	updatePosition(x: number, y: number) {
 		this.x = x;
 		this.y = y;
+	}
+
+	/**
+	 * Sets the number of horizontally rendered floor tiles.
+	 * Internally the width property is adapted to accommodate the requested number of tiles
+	 * @param horizontalTiles
+	 */
+	set horizontalTiles(horizontalTiles: number) {
+		this.width = horizontalTiles * this.texture.width;
+	}
+
+	/**
+	 * Sets the number of vertically rendered floor tiles.
+	 * Internally the height property is adapted to accommodate the requested number of tiles
+	 * @param verticalTiles
+	 */
+	set verticalTiles(verticalTiles: number) {
+		this.height = verticalTiles * this.texture.height;
 	}
 
 	private getTexture(floorType: FloorType): Texture {

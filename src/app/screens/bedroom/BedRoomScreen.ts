@@ -15,7 +15,10 @@ export class BedRoomScreen extends Container implements AppScreen {
 		super();
 		this.mainContainer = new Container();
 		this.addChild(this.mainContainer);
-		this.floorTile = new FloorTile(FloorType.WOODEN, 200, 200, 30, 20);
+		this.floorTile = new FloorTile(FloorType.WOODEN);
+		this.floorTile.updatePosition(200, 200);
+		this.floorTile.horizontalTiles = 30;
+		this.floorTile.verticalTiles = 20;
 		this.wallTile = WALL_TILES.CIRCLES.WHITE_SKIRTING_BOARD.white();
 		this.wallTile.matchPosition(this.floorTile);
 		this.wallTile.matchWidth(this.floorTile);
