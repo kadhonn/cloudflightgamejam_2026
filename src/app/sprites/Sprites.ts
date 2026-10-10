@@ -9,8 +9,10 @@ function loadTextureFromAsset(asset: string, width: number, height: number, col:
     let x = col * width;
     let y = row * height;
 
-    return new Texture({
+    let texture = new Texture({
         source: Assets.get(asset),
         frame: new Rectangle(x, y, width, height)
     });
+    texture.source.scaleMode = 'nearest' //TODO ???
+    return texture;
 }

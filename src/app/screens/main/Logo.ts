@@ -5,6 +5,7 @@ import {
   randomFloat,
   randomInt,
 } from "../../../engine/utils/random.ts";
+import {wallpapers} from "../../sprites/Sprites.ts";
 
 export enum DIRECTION {
   NE,
@@ -34,8 +35,8 @@ export class Logo extends Sprite {
   }
 
   constructor() {
-    const tex = randomBool() ? "logo.svg" : "logo-white.svg";
-    super({ texture: Texture.from(tex), anchor: 0.5, scale: 0.25 });
+    const tex = randomBool() ? wallpapers(12, 26) : wallpapers(9, 26);
+    super({ texture: tex, anchor: 0.5, scale: 4 });
     this.direction = randomInt(0, 3);
     this.speed = randomFloat(1, 6);
   }
