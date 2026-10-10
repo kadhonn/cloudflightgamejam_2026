@@ -9,6 +9,7 @@ import { CreationEngine } from "./engine/engine.ts";
  */
 import "@pixi/sound";
 import { Assets } from "pixi.js";
+
 // import "@esotericsoftware/spine-pixi-v8";
 
 // Create a new creation engine instance
@@ -16,25 +17,25 @@ const engine = new CreationEngine();
 setEngine(engine);
 
 (async () => {
-  // Initialize the creation engine instance
-  await engine.init({
-    background: "#1E1E1E",
-    resizeOptions: { minWidth: 768, minHeight: 1024, letterbox: false },
-  });
+	// Initialize the creation engine instance
+	await engine.init({
+		background: "#1E1E1E",
+		resizeOptions: { minWidth: 768, minHeight: 1024, letterbox: false },
+	});
 
-  // temporary asset preload
-  await Assets.load([
-    {
-      alias: "her",
-      src: "https://pixijs.com/assets/bunny.png",
-    },
-  ]);
+	// temporary asset preload
+	await Assets.load([
+		{
+			alias: "her",
+			src: "https://pixijs.com/assets/bunny.png",
+		},
+	]);
 
-  // Initialize the user settings
-  userSettings.init();
+	// Initialize the user settings
+	userSettings.init();
 
-  // Show the load screen
-  await engine.navigation.showScreen(LoadScreen);
-  // Show the main screen once the load screen is dismissed
-  await engine.navigation.showScreen(IntroScreen);
+	// Show the load screen
+	await engine.navigation.showScreen(LoadScreen);
+	// Show the main screen once the load screen is dismissed
+	await engine.navigation.showScreen(IntroScreen);
 })();
