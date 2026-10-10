@@ -11,11 +11,14 @@ import {
 export type Mask = { label: string, assetName: string }
 export const MASKS: Mask[] = [
     {label: "Lips", assetName: "mask_lips.png"},
+    {label: "Eyes", assetName: "mask_eyes.png"},
     {label: "Eye Circles", assetName: "mask_eyecircles.png"},
     {label: "Hair", assetName: "mask_hair.png"},
+    {label: "Nose", assetName: "mask_nose.png"},
+    {label: "Cheeks", assetName: "mask_cheeks.png"},
+    {label: "Left", assetName: "mask_left.png"},
+    {label: "Right", assetName: "mask_right.png"},
 ]
-
-type AppliedMask = { color: string, masks: Mask[] }
 
 export class FaceContainer extends Container {
     public imageSource: CanvasSource;
@@ -41,12 +44,8 @@ export class FaceContainer extends Container {
 
     }
 
-    red() {
-        this.applyCurrentMasks("#ff0000");
-    }
-
-    blue() {
-        this.applyCurrentMasks("#0000ff");
+    chosenColor(color: string) {
+        this.applyCurrentMasks(color);
     }
 
     chosenMask(mask: Mask) {
@@ -93,11 +92,18 @@ export class FaceContainer extends Container {
             }
             appliedMaskContext.globalCompositeOperation = "xor";
             appliedMaskContext.fillRect(0, 0, 128, 128)
-            appliedMaskContext.globalCompositeOperation = "source-in";
-            appliedMaskContext.fillStyle = appliedMask.color;
-            appliedMaskContext.fillRect(0, 0, 128, 128)
+            if (appliedMask.color === "") {
+                allMasksContext.save()
+                allMasksContext.globalCompositeOperation = "destination-out";
+                allMasksContext.drawImage(appliedMaskCanvas, 0, 0, 128, 128);
+                allMasksContext.restore()
+            } else {
+                appliedMaskContext.globalCompositeOperation = "source-in";
+                appliedMaskContext.fillStyle = appliedMask.color;
+                appliedMaskContext.fillRect(0, 0, 128, 128)
+                allMasksContext.drawImage(appliedMaskCanvas, 0, 0, 128, 128);
+            }
 
-            allMasksContext.drawImage(appliedMaskCanvas, 0, 0, 128, 128);
         }
 
         let ctx = this.getContext2D();
@@ -145,3 +151,5 @@ export class FaceContainer extends Container {
         this.updatePicture();
     }
 }
+
+type AppliedMask = { color: string, masks: Mask[] }

@@ -32,11 +32,18 @@ export class MakeupGameScreen extends Container implements AppScreen {
         this.addChild(this.faceContainer);
 
         this.colorButtons = [];
-        this.addColorButton("Red", () => this.faceContainer.red());
-        this.addColorButton("Blue", () => this.faceContainer.blue());
+        this.addColorButton("Red", () => this.faceContainer.chosenColor("#e52828"));
+        this.addColorButton("Blue", () => this.faceContainer.chosenColor("#2727e2"));
+        this.addColorButton("Rose", () => this.faceContainer.chosenColor("#d16f8a"));
+        this.addColorButton("Purple", () => this.faceContainer.chosenColor("#6f0ca0"));
+        this.addColorButton("Brown", () => this.faceContainer.chosenColor("#512204"));
+        this.addColorButton("Blond", () => this.faceContainer.chosenColor("#ffd390"));
+        this.addColorButton("Black", () => this.faceContainer.chosenColor("#000000"));
+        this.addColorButton("White", () => this.faceContainer.chosenColor("#ffffff"));
+        this.addColorButton("Wash", () => this.faceContainer.chosenColor(""));
 
         this.maskButtons = [];
-        for(let mask of MASKS){
+        for (let mask of MASKS) {
             this.addMaskButton(mask.label, () => this.faceContainer.chosenMask(mask));
         }
 
@@ -68,11 +75,6 @@ export class MakeupGameScreen extends Container implements AppScreen {
         const BUTTON_DISTANCE = 100;
 
         let i = 0;
-        for (let button of this.colorButtons) {
-            button.x = 100;
-            button.y = 100 + i * BUTTON_DISTANCE;
-            i++
-        }
         for (let button of this.maskButtons) {
             button.x = 100;
             button.y = 100 + i * BUTTON_DISTANCE;
@@ -81,6 +83,13 @@ export class MakeupGameScreen extends Container implements AppScreen {
 
         this.resetButton.x = 100;
         this.resetButton.y = 100 + (i + 1) * BUTTON_DISTANCE;
+
+        i = 0;
+        for (let button of this.colorButtons) {
+            button.x = width - 100;
+            button.y = 100 + i * BUTTON_DISTANCE;
+            i++
+        }
     }
 
     private addColorButton(label: string, onclick: () => void) {
