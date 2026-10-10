@@ -1,5 +1,6 @@
 import { Container, Text, type TextStyle } from "pixi.js";
 import type { AppScreen } from "../../../engine/navigation/navigation.ts";
+import { userSettings } from "../../utils/userSettings.ts";
 import { MainScreen } from "./MainScreen.ts";
 
 const QUOTE = '"Slept, awoke, slept, awoke, miserable life."';
@@ -29,6 +30,7 @@ export class IntroScreen extends Container implements AppScreen {
 	private startTimeMs!: number;
 	private skipListener = (e: KeyboardEvent) => {
 		if (e.key === "Escape") {
+			userSettings.skipIntro = true;
 			MainScreen.show();
 		}
 	};

@@ -82,7 +82,6 @@ function door(row: number, col: number): Texture {
 	return loadTextureFromRect("doors.png", x, y, DOOR_WIDTH, DOOR_CELL_HEIGHT);
 }
 
-
 export const TABLE_WIDTH = 20;
 export const TABLE_HEIGHT = 28;
 
@@ -103,7 +102,13 @@ export function loadTextureFromAsset(
 	gridWidth: number = width,
 	gridHeight: number = height,
 ) {
-	return loadTextureFromRect(asset, col * gridWidth, row * gridHeight, width, height);
+	return loadTextureFromRect(
+		asset,
+		col * gridWidth,
+		row * gridHeight,
+		width,
+		height,
+	);
 }
 
 function loadTextureFromRect(

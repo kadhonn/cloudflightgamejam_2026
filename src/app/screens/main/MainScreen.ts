@@ -9,10 +9,10 @@ import { PausePopup } from "../../popups/PausePopup.ts";
 import { SettingsPopup } from "../../popups/SettingsPopup.ts";
 import { Button } from "../../ui/Button.ts";
 import { BedRoomScreen } from "../bedroom/BedRoomScreen.ts";
+import { LivingRoomScreen } from "../livingroom/LivingRoomScreen.ts";
 import { MakeupGameScreen } from "../makeup/MakeupGameScreen.ts";
 import { Bouncer } from "./Bouncer.ts";
 import { ExampleScreen } from "./ExampleScreen.ts";
-import { LivingRoomScreen } from "../livingroom/LivingRoomScreen.ts";
 
 /** The screen that holds the app */
 export class MainScreen extends Container implements AppScreen {
@@ -84,9 +84,9 @@ export class MainScreen extends Container implements AppScreen {
 		this.mainMenuContainer.addChild(this.exampleScreenButton);
 
 		this.livingRoomScreenButton = new Button({
-			text: "Living room"
+			text: "Living room",
 		});
-		this.livingRoomScreenButton.onPress.connect(() => 
+		this.livingRoomScreenButton.onPress.connect(() =>
 			engine().navigation.showScreen(LivingRoomScreen),
 		);
 		this.livingRoomScreenButton.y = 300;
