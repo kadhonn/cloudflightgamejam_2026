@@ -14,23 +14,23 @@ export class Her extends Character {
 		return this.her;
 	}
 
-	async init() {
+	init() {
 		this.screenContainer.addChild(this.her);
 	}
 
-	async down(deltaTime: number) {
+	down(deltaTime: number) {
 		this.her.y += this.speed / deltaTime;
 	}
 
-	async left(deltaTime: number) {
+	left(deltaTime: number) {
 		this.her.x -= this.speed / deltaTime;
 	}
 
-	async right(deltaTime: number) {
+	right(deltaTime: number) {
 		this.her.x += this.speed / deltaTime;
 	}
 
-	async up(deltaTime: number) {
+	up(deltaTime: number) {
 		this.her.y -= this.speed / deltaTime;
 	}
 }

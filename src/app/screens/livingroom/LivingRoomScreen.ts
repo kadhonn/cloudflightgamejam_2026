@@ -123,26 +123,26 @@ export class LivingRoomScreen extends RoomScreenBase {
 		this.addChild(this.testCTMessButton);
 	}
 
-	public async drawRoomEntities(container: Container) {
+	public drawRoomEntities(container: Container) {
 		this.drawKitchen(container);
 
 		// doors stand in the wall, the number is the tile column they start at
-		var bedroomDoor = await this.drawDoor(
+		let bedroomDoor = this.drawDoor(
 			this.state.bedroomDoorState,
 			container,
 			2,
 		);
-		var bathroomDoor = await this.drawDoor(
+		let bathroomDoor = this.drawDoor(
 			this.state.bathroomDoorState,
 			container,
 			5,
 		);
-		var kidsroomDoor = await this.drawDoor(
+		let kidsroomDoor = this.drawDoor(
 			this.state.kidsroomDoorState,
 			container,
 			16,
 		);
-		var exitDoor = await this.drawDoor(this.state.exitDoorState, container, 20);
+		let exitDoor = this.drawDoor(this.state.exitDoorState, container, 20);
 
 		this.addInteractableForEntity(bedroomDoor, this.state.bedroomDoorState);
 		this.addInteractableForEntity(bathroomDoor, this.state.bathroomDoorState);
@@ -175,7 +175,7 @@ export class LivingRoomScreen extends RoomScreenBase {
 		return FloorType.WOODEN;
 	}
 
-	public async drawKitchen(container: Container) {
+	public drawKitchen(container: Container) {
 		var kitchen = new Kitchen(this.state, 0, 0);
 		this.positionEntityOntoEntityByTile(kitchen, container, 7, 1);
 		this.kitchenUpdater = (state) => {
@@ -188,31 +188,18 @@ export class LivingRoomScreen extends RoomScreenBase {
 		);
 	}
 
-	public async drawDoor(
-		state: DoorState,
-		container: Container,
-		col: number,
-	): Promise<Door> {
-		var door = new Door(state);
-		this.positionEntityOntoEntityByTile(door, container, col, 1);
-		container.addChild(door);
-		return door;
-	}
-
-	public async drawTable(container: Container) {
+	public drawTable(container: Container) {
 		var table = new Table(this.state.tableState, 0, 0);
 		this.positionEntityOntoEntityByTile(table, container, 4, 6);
-		container.addChild(table);
 		this.tableUpdater = (state) => {
 			table.updateState(state);
 		};
 		this.addInteractableForEntity(table, this.state.tableState);
 	}
 
-	public async drawCouchTable(container: Container) {
+	public drawCouchTable(container: Container) {
 		var couchTable = new CouchTable(this.state.couchTableState, 0, 0);
 		this.positionEntityOntoEntityByTile(couchTable, container, 20, 8);
-		container.addChild(couchTable);
 		this.couchTableUpdater = (state) => {
 			couchTable.updateState(state);
 		};

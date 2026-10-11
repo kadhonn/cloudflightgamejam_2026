@@ -9,6 +9,9 @@ import type { EntityBaseState } from "../story/entitystates/EntityStateBase";
 import { StoryState } from "../story/storystate/StoryState";
 import { InteractionText } from "../ui/InteractionText.ts";
 import { StoryText } from "../ui/StoryText.ts";
+import {Table} from "../interior/Table.ts";
+import {DoorState} from "../story/entitystates/DoorState.ts";
+import {Door} from "../interior/Door.ts";
 
 const TILE_SIZE = 16;
 const SCALE_FACTOR = 4;
@@ -233,9 +236,9 @@ export abstract class RoomScreenBase extends Container implements AppScreen {
 		};
 	}
 
-	public async drawRoom() {
-		await this.drawBackground(this.mainContainer);
-		await this.drawRoomEntities(this.mainContainer);
+	public drawRoom() {
+		this.drawBackground(this.mainContainer);
+		this.drawRoomEntities(this.mainContainer);
 
 		// always draw last to have character on top layer
 		this.drawCharacter();
@@ -261,8 +264,8 @@ export abstract class RoomScreenBase extends Container implements AppScreen {
 		this.roomTop = wallTile.y - wallTile.height * wallTile.scale.y;
 	}
 
-	public async drawCharacter() {
-		await this.her.show(this.mainContainer);
+	public drawCharacter() {
+		this.her.show(this.mainContainer);
 		const { col, row } = this.getPlayerStartTile();
 		this.placeEntityByTile(this.her.view, col, row, false);
 	}
@@ -362,5 +365,15 @@ export abstract class RoomScreenBase extends Container implements AppScreen {
 			this.removeChild(this.interactionText);
 			this.interactionText = null;
 		}
+	}
+
+	public drawDoor(
+		state: DoorState,
+		container: Container,
+		col: number,
+	): Door {
+		let door = new Door(state);
+		this.positionEntityOntoEntityByTile(door, container, col, 1);
+		return door;
 	}
 }
