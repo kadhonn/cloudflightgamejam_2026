@@ -1,11 +1,11 @@
-import { Container, Rectangle, Sprite, Texture, type Ticker } from "pixi.js";
-import type { AppScreen } from "../../engine/navigation/navigation";
-import type { Character } from "../character/Character";
+import {Container, PoolItem, PoolItemConstructor, Rectangle, Sprite, Texture, type Ticker} from "pixi.js";
+import {AppScreen} from "../../engine/navigation/navigation";
+import  { Character } from "../character/Character";
 import { CharacterController } from "../character/CharacterController";
 import { Her } from "../character/Her";
 import { FloorTile, type FloorType } from "../interior/FloorTile";
-import type { WallTile } from "../interior/WallTile";
-import type { EntityBaseState } from "../story/entitystates/EntityStateBase";
+import  { WallTile } from "../interior/WallTile";
+import  { EntityBaseState } from "../story/entitystates/EntityStateBase";
 import { StoryState } from "../story/storystate/StoryState";
 import { InteractionText } from "../ui/InteractionText.ts";
 import { StoryText } from "../ui/StoryText.ts";
@@ -34,7 +34,7 @@ const INTERACTION_TEXT_OFFSET = 16;
 // to determine that collision box
 const FEET_HEIGHT_RATIO = 0.1;
 
-export abstract class RoomScreenBase extends Container implements AppScreen {
+export abstract class RoomScreenBase extends Container implements AppScreen, PoolItem {
 	public mainContainer: Container;
 	public her: Character;
 	public controller: CharacterController;

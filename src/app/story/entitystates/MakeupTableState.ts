@@ -7,6 +7,7 @@ export class MakeupTableState extends EntityBaseState {
 
     public constructor() {
         super();
+        this.isInteractable = true;
         this.entityInteractionDelegate = () => {
             engine().navigation.showScreen(MakeupGameScreen)
         };
