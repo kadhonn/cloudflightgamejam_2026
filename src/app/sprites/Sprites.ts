@@ -60,14 +60,24 @@ export function whiskeyBottle(): Texture {
 	return loadTextureFromRect("Messy_Furniture_16x16.png", 371, 288, 8, 15);
 }
 
-/** bottom of bed, 1st from beds.png. */
+/** bottom of bed, 1st from beds16x16.png. */
 export function bedBottom(): Texture {
 	return loadTextureFromRect("beds16x16.png", 0, 16, 32, 32);
 }
 
-/** top of bed, first of top beds, in red, from beds.png. */
+/** top of bed, first of top beds, in red, from beds16x16.png. */
 export function bedTop(): Texture {
 	return loadTextureFromRect("beds16x16.png", 384, 144, 32, 32);
+}
+
+/** makeup tables, bottom left third from tables.png. */
+export function makeupTable(): Texture {
+	return loadTextureFromRect("tables.png", 96, 320, 32, 32);
+}
+
+/** pills bottle, second row first left from bathrooms.png. */
+export function pills(): Texture {
+	return loadTextureFromRect("bathroom.png", 0, 32, 16, 16);
 }
 
 // door lookup constants
