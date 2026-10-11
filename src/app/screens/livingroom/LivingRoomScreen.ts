@@ -1,11 +1,10 @@
-import { Container } from "pixi.js";
-import type { AppScreen } from "../../../engine/navigation/navigation";
+import type { Container } from "pixi.js";
 import {
 	CouchTable,
 	type CouchTableUpdateDelegate,
 } from "../../interior/CouchTable.ts";
 import { Door, type DoorUpdateDelegate } from "../../interior/Door";
-import { FloorTile, FloorType } from "../../interior/FloorTile";
+import { type FloorTile, FloorType } from "../../interior/FloorTile";
 import { Kitchen, type KitchenUpdateDelegate } from "../../interior/Kitchen";
 import { Table, type TableUpdateDelegate } from "../../interior/Table.ts";
 import { WALL_TILES } from "../../interior/WallTile";
@@ -13,13 +12,14 @@ import { CouchTableMessState } from "../../story/entitystates/CouchTableState.ts
 import type { DoorState } from "../../story/entitystates/DoorState.ts";
 import { LivingRoomState } from "../../story/roomstates/LivingRoomState";
 import { Button } from "../../ui/Button.ts";
+import { RoomScreenBase } from "../RoomScreenBase.ts";
 
-export class LivingRoomScreen extends Container implements AppScreen {
+export class LivingRoomScreen extends RoomScreenBase {
 	/** Assets bundles required by this screen */
 	public static assetBundles = ["main"];
 
-	public mainContainer: Container;
 	private state: LivingRoomState;
+	private floorTile!: FloorTile;
 
 	// not sure if we need these in the end, but they have been
 	// really helpful with testing/degugging UI updates on state change
@@ -38,21 +38,20 @@ export class LivingRoomScreen extends Container implements AppScreen {
 
 	constructor(state: LivingRoomState = new LivingRoomState()) {
 		super();
+
 		this.state = state;
 		this.state.dirtyDishes = true;
-		this.mainContainer = new Container();
-		this.addChild(this.mainContainer);
 
 		this.drawRoom();
 
 		//TODO: remove test code below - used for testing state changes
 		this.testDishesButton = new Button({
 			text: "toggle dishes",
-			width: 475,
-			height: 130,
+			width: 300,
+			height: 100,
 		});
-		this.testDishesButton.y = 400;
-		this.testDishesButton.x = 400;
+		this.testDishesButton.y = 300;
+		this.testDishesButton.x = 100;
 		this.testDishesButton.onPress.connect(() => {
 			this.state.dirtyDishes = !this.state.dirtyDishes;
 			this.kitchenUpdater(this.state);
@@ -61,11 +60,11 @@ export class LivingRoomScreen extends Container implements AppScreen {
 
 		this.testNoteButton = new Button({
 			text: "toggle note",
-			width: 475,
-			height: 130,
+			width: 300,
+			height: 100,
 		});
-		this.testNoteButton.y = 700;
-		this.testNoteButton.x = 400;
+		this.testNoteButton.y = 450;
+		this.testNoteButton.x = 100;
 		this.testNoteButton.onPress.connect(() => {
 			this.state.tableState.hasNote = !this.state.tableState.hasNote;
 			this.state.tableState.noteText = "Lorem Ipsum";
@@ -75,11 +74,11 @@ export class LivingRoomScreen extends Container implements AppScreen {
 
 		this.testDoorsButton = new Button({
 			text: "toggle doors",
-			width: 475,
-			height: 130,
+			width: 300,
+			height: 100,
 		});
-		this.testDoorsButton.y = 1000;
-		this.testDoorsButton.x = 400;
+		this.testDoorsButton.y = 600;
+		this.testDoorsButton.x = 100;
 		this.testDoorsButton.onPress.connect(() => {
 			this.state.bedroomDoorState.isOpen = !this.state.bedroomDoorState.isOpen;
 			this.state.bathroomDoorState.isOpen =
@@ -96,11 +95,11 @@ export class LivingRoomScreen extends Container implements AppScreen {
 
 		this.testCTMessButton = new Button({
 			text: "cycle mess",
-			width: 475,
-			height: 130,
+			width: 300,
+			height: 100,
 		});
-		this.testCTMessButton.y = 1300;
-		this.testCTMessButton.x = 400;
+		this.testCTMessButton.y = 750;
+		this.testCTMessButton.x = 100;
 		this.testCTMessButton.onPress.connect(() => {
 			switch (this.state.couchTableState.messState) {
 				case CouchTableMessState.NONE:
@@ -121,28 +120,22 @@ export class LivingRoomScreen extends Container implements AppScreen {
 		this.addChild(this.testCTMessButton);
 	}
 
-	public async drawRoom() {
-		this.drawBackground(this.mainContainer);
+	public async drawRoomEntities(container: Container) {
+		this.drawKitchen(container);
 
-		this.drawKitchen(this.mainContainer);
-
-		//bedroom door
-		var bedroomDoor = this.drawDoor(
-			this.state.bedroomDoorState,
-			this.mainContainer,
-		);
-		//bathroom door
+		// doors stand in the wall, the number is the tile column they start at
+		var bedroomDoor = this.drawDoor(this.state.bedroomDoorState, container, 2);
 		var bathroomDoor = this.drawDoor(
 			this.state.bathroomDoorState,
-			this.mainContainer,
+			container,
+			5,
 		);
-		//kids room door
 		var kidsroomDoor = this.drawDoor(
 			this.state.kidsroomDoorState,
-			this.mainContainer,
+			container,
+			16,
 		);
-		//exit door
-		var exitDoor = this.drawDoor(this.state.exitDoorState, this.mainContainer);
+		var exitDoor = this.drawDoor(this.state.exitDoorState, container, 20);
 
 		this.bedroomDoorUpdater = async (state) => {
 			(await bedroomDoor).updateState(state);
@@ -157,39 +150,41 @@ export class LivingRoomScreen extends Container implements AppScreen {
 			(await exitDoor).updateState(state);
 		};
 
-		this.drawTable(this.mainContainer);
+		this.drawTable(container);
 
-		this.drawCouchTable(this.mainContainer);
+		this.drawCouchTable(container);
 	}
 
-	public async drawBackground(container: Container) {
-		var floorTile = new FloorTile(FloorType.WOODEN);
-		floorTile.updatePosition(200, 200);
-		floorTile.horizontalTiles = 30;
-		floorTile.verticalTiles = 20;
-		var wallTile = WALL_TILES.PLAIN.WHITE_SKIRTING_BOARD.red();
-		wallTile.matchPosition(floorTile);
-		wallTile.matchWidth(floorTile);
-		container.addChild(floorTile);
-		container.addChild(wallTile);
+	public getWallTile() {
+		return WALL_TILES.PLAIN.WHITE_SKIRTING_BOARD.red();
+	}
+
+	public getFloorType() {
+		return FloorType.WOODEN;
 	}
 
 	public async drawKitchen(container: Container) {
-		var kitchen = new Kitchen(this.state, 500, 200 - 32);
-		container.addChild(kitchen);
+		var kitchen = new Kitchen(this.state, 0, 0);
+		this.positionEntityOntoEntityByTile(kitchen, container, 7, 1);
 		this.kitchenUpdater = (state) => {
 			kitchen.updateState(state);
 		};
 	}
 
-	public async drawDoor(state: DoorState, container: Container): Promise<Door> {
+	public async drawDoor(
+		state: DoorState,
+		container: Container,
+		col: number,
+	): Promise<Door> {
 		var door = new Door(state);
+		this.positionEntityOntoEntityByTile(door, container, col, 1);
 		container.addChild(door);
 		return door;
 	}
 
 	public async drawTable(container: Container) {
-		var table = new Table(this.state.tableState, 800, 700);
+		var table = new Table(this.state.tableState, 0, 0);
+		this.positionEntityOntoEntityByTile(table, container, 4, 6);
 		container.addChild(table);
 		this.tableUpdater = (state) => {
 			table.updateState(state);
@@ -197,7 +192,8 @@ export class LivingRoomScreen extends Container implements AppScreen {
 	}
 
 	public async drawCouchTable(container: Container) {
-		var couchTable = new CouchTable(this.state.couchTableState, 1800, 650);
+		var couchTable = new CouchTable(this.state.couchTableState, 0, 0);
+		this.positionEntityOntoEntityByTile(couchTable, container, 20, 8);
 		container.addChild(couchTable);
 		this.couchTableUpdater = (state) => {
 			couchTable.updateState(state);

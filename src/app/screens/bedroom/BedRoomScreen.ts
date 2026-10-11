@@ -1,28 +1,25 @@
-import { Container } from "pixi.js";
-import type { AppScreen } from "../../../engine/navigation/navigation";
-import { FloorTile, FloorType } from "../../interior/FloorTile";
-import { WALL_TILES, type WallTile } from "../../interior/WallTile";
+import type { Container } from "pixi.js";
+import { FloorType } from "../../interior/FloorTile";
+import { WALL_TILES } from "../../interior/WallTile";
+import { RoomScreenBase } from "../RoomScreenBase";
 
-export class BedRoomScreen extends Container implements AppScreen {
+export class BedRoomScreen extends RoomScreenBase {
 	/** Assets bundles required by this screen */
 	public static assetBundles = ["main"];
 
-	public mainContainer: Container;
-	public floorTile: FloorTile;
-	public wallTile: WallTile;
-
 	constructor() {
 		super();
-		this.mainContainer = new Container();
-		this.addChild(this.mainContainer);
-		this.floorTile = new FloorTile(FloorType.WOODEN);
-		this.floorTile.updatePosition(200, 200);
-		this.floorTile.horizontalTiles = 30;
-		this.floorTile.verticalTiles = 20;
-		this.wallTile = WALL_TILES.CIRCLES.WHITE_SKIRTING_BOARD.white();
-		this.wallTile.matchPosition(this.floorTile);
-		this.wallTile.matchWidth(this.floorTile);
-		this.mainContainer.addChild(this.floorTile);
-		this.mainContainer.addChild(this.wallTile);
+
+		this.drawRoom();
+	}
+
+	public async drawRoomEntities(container: Container) {}
+
+	public getWallTile() {
+		return WALL_TILES.CIRCLES.WHITE_SKIRTING_BOARD.white();
+	}
+
+	public getFloorType() {
+		return FloorType.WOODEN;
 	}
 }
