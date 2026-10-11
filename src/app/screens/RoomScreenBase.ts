@@ -211,11 +211,14 @@ export abstract class RoomScreenBase extends Container implements AppScreen {
 	private moveCharacter(ticker: Ticker) {
 		if (this.controller.keys.up.pressed) {
 			this.her.up(ticker.deltaTime);
-		} else if (this.controller.keys.down.pressed) {
+		}
+		if (this.controller.keys.down.pressed) {
 			this.her.down(ticker.deltaTime);
-		} else if (this.controller.keys.left.pressed) {
+		}
+		if (this.controller.keys.left.pressed) {
 			this.her.left(ticker.deltaTime);
-		} else if (this.controller.keys.right.pressed) {
+		}
+		if (this.controller.keys.right.pressed) {
 			this.her.right(ticker.deltaTime);
 		}
 	}

@@ -3,7 +3,7 @@ import { Character } from "./Character.ts";
 
 export class Her extends Character {
 	her: Sprite;
-	speed: number = 1;
+	speed: number = 4;
 
 	constructor() {
 		super();
