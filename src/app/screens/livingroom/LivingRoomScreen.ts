@@ -8,11 +8,11 @@ import { type FloorTile, FloorType } from "../../interior/FloorTile";
 import { Kitchen, type KitchenUpdateDelegate } from "../../interior/Kitchen";
 import { Table, type TableUpdateDelegate } from "../../interior/Table.ts";
 import { WALL_TILES } from "../../interior/WallTile";
-import { CouchTableMessState } from "../../story/entitystates/CouchTableState.ts";
 import { LivingRoomState } from "../../story/roomstates/LivingRoomState";
-import { Button } from "../../ui/Button.ts";
 import { RoomScreenBase } from "../RoomScreenBase.ts";
 import {Couch} from "../../interior/Couch.ts";
+import { storyEngine } from "../../story/storyengine/StoryEngine.ts";
+import { TV, TVUpdateDelegate } from "../../interior/TV.ts";
 
 export class LivingRoomScreen extends RoomScreenBase {
 	/** Assets bundles required by this screen */
@@ -29,97 +29,14 @@ export class LivingRoomScreen extends RoomScreenBase {
 	private exitDoorUpdater: DoorUpdateDelegate = (doorState) => {};
 	private tableUpdater: TableUpdateDelegate = (tableState) => {};
 	private couchTableUpdater: CouchTableUpdateDelegate = (couchTableState) => {};
+    private tvUpdater: TVUpdateDelegate = (tvState) => {};
 
-	private testDishesButton: Button;
-	private testNoteButton: Button;
-	private testDoorsButton: Button;
-	private testCTMessButton: Button;
-
-	constructor(state: LivingRoomState = new LivingRoomState()) {
+	constructor() {
 		super();
 
-		this.state = state;
-
-		this.state.kitchenState.entityInteractionDelegate = () =>
-			this.showStoryText("You interacted with the sink!");
+		this.state = storyEngine().storyState.livingRoomState;
 
 		this.drawRoom();
-
-		//TODO: remove test code below - used for testing state changes
-		this.testDishesButton = new Button({
-			text: "toggle dishes",
-			width: 300,
-			height: 100,
-		});
-		this.testDishesButton.y = 300;
-		this.testDishesButton.x = 100;
-		this.testDishesButton.onPress.connect(() => {
-			this.state.kitchenState.dirtyDishes =
-				!this.state.kitchenState.dirtyDishes;
-			this.kitchenUpdater(this.state);
-		});
-		this.addChild(this.testDishesButton);
-
-		this.testNoteButton = new Button({
-			text: "toggle note",
-			width: 300,
-			height: 100,
-		});
-		this.testNoteButton.y = 450;
-		this.testNoteButton.x = 100;
-		this.testNoteButton.onPress.connect(() => {
-			this.state.tableState.hasNote = !this.state.tableState.hasNote;
-			this.state.tableState.noteText = "Lorem Ipsum";
-			this.tableUpdater(this.state.tableState);
-		});
-		this.addChild(this.testNoteButton);
-
-		this.testDoorsButton = new Button({
-			text: "toggle doors",
-			width: 300,
-			height: 100,
-		});
-		this.testDoorsButton.y = 600;
-		this.testDoorsButton.x = 100;
-		this.testDoorsButton.onPress.connect(() => {
-			this.state.bedroomDoorState.isOpen = !this.state.bedroomDoorState.isOpen;
-			this.state.bathroomDoorState.isOpen =
-				!this.state.bathroomDoorState.isOpen;
-			this.state.kidsroomDoorState.isOpen =
-				!this.state.kidsroomDoorState.isOpen;
-			this.state.exitDoorState.isOpen = !this.state.exitDoorState.isOpen;
-			this.bedroomDoorUpdater(this.state.bedroomDoorState);
-			this.bathroomDoorUpdater(this.state.bathroomDoorState);
-			this.kidsroomDoorUpdater(this.state.kidsroomDoorState);
-			this.exitDoorUpdater(this.state.exitDoorState);
-		});
-		this.addChild(this.testDoorsButton);
-
-		this.testCTMessButton = new Button({
-			text: "cycle mess",
-			width: 300,
-			height: 100,
-		});
-		this.testCTMessButton.y = 750;
-		this.testCTMessButton.x = 100;
-		this.testCTMessButton.onPress.connect(() => {
-			switch (this.state.couchTableState.messState) {
-				case CouchTableMessState.NONE:
-					this.state.couchTableState.messState = CouchTableMessState.LITTLE;
-					break;
-				case CouchTableMessState.LITTLE:
-					this.state.couchTableState.messState = CouchTableMessState.MEDIUM;
-					break;
-				case CouchTableMessState.MEDIUM:
-					this.state.couchTableState.messState = CouchTableMessState.LOTS;
-					break;
-				case CouchTableMessState.LOTS:
-					this.state.couchTableState.messState = CouchTableMessState.NONE;
-					break;
-			}
-			this.couchTableUpdater(this.state.couchTableState);
-		});
-		this.addChild(this.testCTMessButton);
 	}
 
 	public drawRoomEntities(container: Container) {
@@ -167,6 +84,18 @@ export class LivingRoomScreen extends RoomScreenBase {
 
 		let couch = new Couch();
 		this.positionEntityOntoEntityByTile(couch, container, 21,7.5)
+		this.drawTV(container);
+	}
+
+	public refreshEntities() {
+		this.kitchenUpdater(this.state);
+		this.bedroomDoorUpdater(this.state.bedroomDoorState);
+		this.bathroomDoorUpdater(this.state.bathroomDoorState);
+		this.kidsroomDoorUpdater(this.state.kidsroomDoorState);
+		this.exitDoorUpdater(this.state.exitDoorState);
+		this.tableUpdater(this.state.tableState);
+		this.couchTableUpdater(this.state.couchTableState);
+        this.tvUpdater(this.state.tvState);
 	}
 
 	public getWallTile() {
@@ -206,5 +135,14 @@ export class LivingRoomScreen extends RoomScreenBase {
 			couchTable.updateState(state);
 		};
 		this.addInteractableForEntity(couchTable, this.state.couchTableState);
+	}
+
+	public drawTV(container: Container) {
+		var tv = new TV(this.state.tvState, 0, 0);
+		this.positionEntityOntoEntityByTile(tv, container, 21, 6);
+		this.tvUpdater = (state) => {
+			tv.updateState(state);
+		};
+		this.addInteractableForEntity(tv, this.state.tvState);
 	}
 }

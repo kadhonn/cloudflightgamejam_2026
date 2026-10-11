@@ -20,4 +20,8 @@ export class StoryEngine {
 	public loadIteration(iteration: StoryState) {
 		this.storyState = iteration;
 	}
+
+    public applyNextStorySlice() {
+        this.storyState.applyNextStorySlice();
+    }
 }

@@ -1,6 +1,5 @@
 import {EntityBaseState} from "./EntityStateBase";
 import {engine} from "../../getEngine.ts";
-import {MakeupGameScreen} from "../../screens/makeup/MakeupGameScreen.ts";
 
 export class MakeupTableState extends EntityBaseState {
     showPills: boolean = false;
@@ -8,7 +7,8 @@ export class MakeupTableState extends EntityBaseState {
     public constructor() {
         super();
         this.isInteractable = true;
-        this.entityInteractionDelegate = () => {
+        this.entityInteractionDelegate = async () => {
+            const { MakeupGameScreen } = await import("../../screens/makeup/MakeupGameScreen.ts");
             engine().navigation.showScreen(MakeupGameScreen)
         };
     }

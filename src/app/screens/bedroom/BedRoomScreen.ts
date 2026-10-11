@@ -6,30 +6,45 @@ import {Bed} from "../../interior/Bed.ts";
 import {BedRoomState} from "../../story/roomstates/BedRoomState.ts";
 import {MakeupTableState} from "../../story/entitystates/MakeupTableState.ts";
 import {MakeupTable, MakeupTableUpdateDelegate} from "../../interior/MakeupTable.ts";
+import type {Door} from "../../interior/Door.ts";
+import { storyEngine } from "../../story/storyengine/StoryEngine.ts";
 
 export class BedRoomScreen extends RoomScreenBase {
     /** Assets bundles required by this screen */
     public static assetBundles = ["main"];
-    public state: BedRoomState = new BedRoomState();
+    public state;
 
     private makeupTableUpdater: MakeupTableUpdateDelegate = (makeupTableState: MakeupTableState) => {};
 
+    private exitDoor!: Door;
+    private bed!: Bed;
+    private makeupTable!: MakeupTable;
+
     constructor() {
         super();
+
+		this.state = storyEngine().storyState.bedRoomState;
 
         this.drawRoom();
     }
 
 	public drawRoomEntities(container: Container) {
-		const exitDoor = this.drawDoor(this.exitDoorState, container, 2);
+		this.exitDoor = this.drawDoor(this.state.exitDoorState, container, 2);
+		this.addInteractableForEntity(this.exitDoor, this.state.exitDoorState);
 
-        let bed = new Bed(this.state.bedState, 0, 0);
-        this.positionEntityOntoEntityByTile(bed, container, 12, 2);
+        this.bed = new Bed(this.state.bedState, 0, 0);
+        this.positionEntityOntoEntityByTile(this.bed, container, 12, 2);
 
         this.state.makeupTableState.showPills=true;
-        let makeupTable = new MakeupTable(this.state.makeupTableState, 0, 0);
-        this.positionEntityOntoEntityByTile(makeupTable, container, 6, 2);
-        this.addInteractableForEntity(makeupTable, this.state.makeupTableState);
+        this.makeupTable = new MakeupTable(this.state.makeupTableState, 0, 0);
+        this.positionEntityOntoEntityByTile(this.makeupTable, container, 6, 2);
+        this.addInteractableForEntity(this.makeupTable, this.state.makeupTableState);
+    }
+
+    public refreshEntities() {
+        this.exitDoor.updateState(this.state.exitDoorState);
+        this.bed.updateState(this.state.bedState);
+        this.makeupTable.updateState(this.state.makeupTableState);
     }
 
     public getWallTile() {

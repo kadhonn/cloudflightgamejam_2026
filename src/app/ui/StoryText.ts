@@ -22,3 +22,7 @@ export class StoryText extends Text {
 export function showStoryText(text: string) {
 	engine().navigation.showStoryText(text);
 }
+
+export function hideStoryText() {
+	engine().navigation.hideStoryText();
+}

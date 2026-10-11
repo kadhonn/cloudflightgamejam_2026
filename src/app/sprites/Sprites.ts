@@ -118,6 +118,34 @@ export function couchTable(): Texture {
 	return loadTextureFromRect("couchtables.png", 97, 92, 13, 20);
 }
 
+// tv lookup constants: Red_Tv-Sheet.png is an animation strip of 64x64 cells,
+// with the tv at the same spot in every cell
+const TV_CELL_SIZE = 64;
+const TV_OFFSET_X = 15;
+const TV_OFFSET_Y = 15;
+export const TV_WIDTH = 34;
+export const TV_HEIGHT = 33;
+const TV_OFF_FRAME = 0;
+const TV_ON_FRAME = 1;
+
+export function tvOff(): Texture {
+	return tv(TV_OFF_FRAME);
+}
+
+export function tvOn(): Texture {
+	return tv(TV_ON_FRAME);
+}
+
+function tv(frame: number): Texture {
+	return loadTextureFromRect(
+		"Red_Tv-Sheet.png",
+		frame * TV_CELL_SIZE + TV_OFFSET_X,
+		TV_OFFSET_Y,
+		TV_WIDTH,
+		TV_HEIGHT,
+	);
+}
+
 export function loadTextureFromAsset(
 	asset: string,
 	width: number,

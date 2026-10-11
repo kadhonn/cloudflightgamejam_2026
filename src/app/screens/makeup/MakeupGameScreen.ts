@@ -5,6 +5,7 @@ import {Button} from "../../ui/Button.ts";
 import {FaceContainer, MASKS} from "./FaceContainer.ts";
 import {engine} from "../../getEngine.ts";
 import {BedRoomScreen} from "../bedroom/BedRoomScreen.ts";
+import { transitionManager, TransitionTargetType } from "../TransitionManager.ts";
 
 /** The screen that holds the app */
 export class MakeupGameScreen extends Container implements AppScreen {
@@ -65,7 +66,7 @@ export class MakeupGameScreen extends Container implements AppScreen {
             width: 175,
             height: 110,
         });
-        this.doneButton.onPress.connect(() => engine().navigation.showScreen(BedRoomScreen));
+        this.doneButton.onPress.connect(() => transitionManager().transition(TransitionTargetType.MAKEUP, TransitionTargetType.BEDROOM));
         this.addChild(this.doneButton);
     }
 

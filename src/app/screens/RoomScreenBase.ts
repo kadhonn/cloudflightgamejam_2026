@@ -84,7 +84,7 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 			this.currentInteractionContext = interactionContext;
 			if (interactionContext) {
 				this.showInteractionText(
-					interactionContext.interactionText || "You could interact here",
+					interactionContext.interactionHint,
 				);
 			} else {
 				this.hideInteractionText();
@@ -94,9 +94,11 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 		// interact once per key press, not on every frame the key is held down
 		const interactPressed = this.controller.keys.interact.pressed;
 		if (interactPressed && !this.wasInteractPressed) {
-			this.getInteractionContext(this.getFeetArea())?.interact(
-				storyEngine().storyState,
-			);
+			const context = this.getInteractionContext(this.getFeetArea());
+			if (context) {
+				context.interact(storyEngine().storyState);
+				this.refreshEntities();
+			}
 		}
 		this.wasInteractPressed = interactPressed;
 	}
@@ -234,10 +236,7 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 	// TODO: should probably be set by transition delegates
 	// maybe warrants a separate transision manager class
 	public getPlayerStartTile(): { col: number; row: number } {
-		return {
-			col: Math.floor(ROOM_WIDTH / 2),
-			row: Math.ceil((ROOM_HEIGHT - WALL_HEIGHT) / 2),
-		};
+		return { col: storyEngine().spawnTile[0], row: storyEngine().spawnTile[1] };
 	}
 
 	public drawRoom() {
@@ -249,6 +248,9 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 	}
 
 	public abstract drawRoomEntities(container: Container): Promise<void> | void;
+
+	// rooms redraw their entities from the current state here, called after every interaction
+	public refreshEntities(): void {}
 
 	public abstract getWallTile(): WallTile;
 	public abstract getFloorType(): FloorType;

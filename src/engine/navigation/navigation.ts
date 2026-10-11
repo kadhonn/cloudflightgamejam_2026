@@ -5,6 +5,7 @@ import type { CreationEngine } from "../engine.ts";
 
 export interface StoryTextAware {
     showStoryText?(text: string):void;
+    hideStoryText?():void;
 }
 
 export interface InteractionTextAware {
@@ -67,6 +68,9 @@ export class Navigation {
   /** Current popup being displayed */
   public currentPopup?: AppScreen;
 
+  /** Story text that stays visible across screen changes until hidden */
+  private currentStoryText: string | null = null;
+
   public init(app: CreationEngine) {
     this.app = app;
   }
@@ -108,6 +112,11 @@ export class Navigation {
       screen.interactiveChildren = false;
       await screen.show();
       screen.interactiveChildren = true;
+    }
+
+    // Carry the story text over from the previous screen
+    if (this.currentStoryText !== null) {
+      (screen as any as StoryTextAware).showStoryText?.(this.currentStoryText);
     }
   }
 
@@ -234,8 +243,16 @@ export class Navigation {
   }
 
   public showStoryText(text: string) {
+      this.currentStoryText = text;
       if (this.currentScreen) {
           (this.currentScreen as any as StoryTextAware).showStoryText?.(text);
+      }
+  }
+
+  public hideStoryText() {
+      this.currentStoryText = null;
+      if (this.currentScreen) {
+          (this.currentScreen as any as StoryTextAware).hideStoryText?.();
       }
   }
 
