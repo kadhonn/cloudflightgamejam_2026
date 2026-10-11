@@ -1,5 +1,18 @@
-export class StoryState {
-	public tableMessGrade = 0;
-	public showNote = false;
-	public dirtyDishes = true;
+import { BedRoomState } from "../roomstates/BedRoomState";
+import { LivingRoomState } from "../roomstates/LivingRoomState";
+import type { StorySlice } from "./StorySlice";
+
+export abstract class StoryState {
+	public livingRoomState = new LivingRoomState();
+	public bedRoomState = new BedRoomState();
+
+	public nextStorySlice: StorySlice;
+
+	constructor() {
+		this.nextStorySlice = this.defineStorySliceList();
+	}
+
+	public abstract getNextIteration(): StoryState;
+
+	public abstract defineStorySliceList(): StorySlice;
 }

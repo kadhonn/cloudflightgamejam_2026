@@ -3,15 +3,14 @@ import {AppScreen} from "../../engine/navigation/navigation";
 import  { Character } from "../character/Character";
 import { CharacterController } from "../character/CharacterController";
 import { Her } from "../character/Her";
+import { Door } from "../interior/Door.ts";
 import { FloorTile, type FloorType } from "../interior/FloorTile";
 import  { WallTile } from "../interior/WallTile";
 import  { EntityBaseState } from "../story/entitystates/EntityStateBase";
-import { StoryState } from "../story/storystate/StoryState";
+import type { DoorState } from "../story/entitystates/DoorState.ts";
+import { storyEngine } from "../story/storyengine/StoryEngine.ts";
 import { InteractionText } from "../ui/InteractionText.ts";
 import { StoryText } from "../ui/StoryText.ts";
-import {Table} from "../interior/Table.ts";
-import {DoorState} from "../story/entitystates/DoorState.ts";
-import {Door} from "../interior/Door.ts";
 
 const TILE_SIZE = 16;
 const SCALE_FACTOR = 4;
@@ -46,9 +45,6 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 	private interactionText: InteractionText | null = null;
 	private roomTop = TOP_LEFT_OFFSET_Y;
 
-	// TODO: should be one story state shared across all rooms, not one per room
-	protected storyState = new StoryState();
-
 	private wasInteractPressed = false;
 	private currentInteractionContext: EntityBaseState | undefined;
 
@@ -73,11 +69,12 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 		const view = this.her.view;
 		const previousX = view.x;
 		const previousY = view.y;
+		const previousFeet = this.getFeetArea();
 
 		this.moveCharacter(ticker);
 
 		// prevent character from walking into walls/objects
-		if (!this.canStandAt(this.getFeetArea())) {
+		if (!this.canMove(previousFeet, this.getFeetArea())) {
 			view.x = previousX;
 			view.y = previousY;
 		}
@@ -97,7 +94,9 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 		// interact once per key press, not on every frame the key is held down
 		const interactPressed = this.controller.keys.interact.pressed;
 		if (interactPressed && !this.wasInteractPressed) {
-			this.getInteractionContext(this.getFeetArea())?.interact(this.storyState);
+			this.getInteractionContext(this.getFeetArea())?.interact(
+				storyEngine().storyState,
+			);
 		}
 		this.wasInteractPressed = interactPressed;
 	}
@@ -196,11 +195,16 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 		);
 	}
 
-	private canStandAt(feet: Rectangle): boolean {
-		return (
-			this.getFloorArea().containsRect(feet) &&
-			!this.obstacles.some((obstacle) => obstacle.intersects(feet))
+	// Only blocks steps that newly walk into an obstacle or off the floor. Obstacles
+	// the feet already overlap (e.g. after spawning inside one) don't block, so the
+	// character can always walk out of them again instead of getting stuck.
+	private canMove(from: Rectangle, to: Rectangle): boolean {
+		const walksIntoObstacle = this.obstacles.some(
+			(obstacle) => obstacle.intersects(to) && !obstacle.intersects(from),
 		);
+		const floor = this.getFloorArea();
+		const leavesFloor = floor.containsRect(from) && !floor.containsRect(to);
+		return !walksIntoObstacle && !leavesFloor;
 	}
 
 	private getInteractionContext(feet: Rectangle): EntityBaseState | undefined {
@@ -367,12 +371,8 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 		}
 	}
 
-	public drawDoor(
-		state: DoorState,
-		container: Container,
-		col: number,
-	): Door {
-		let door = new Door(state);
+	public drawDoor(state: DoorState, container: Container, col: number): Door {
+		const door = new Door(state);
 		this.positionEntityOntoEntityByTile(door, container, col, 1);
 		return door;
 	}

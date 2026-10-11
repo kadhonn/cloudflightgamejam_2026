@@ -1,4 +1,5 @@
 import { Container, Graphics, Text, type TextStyleOptions } from "pixi.js";
+import { engine } from "../getEngine.ts";
 
 const PADDING = 12;
 
@@ -11,11 +12,6 @@ const defaultInteractionStyle: Partial<TextStyleOptions> = {
 	wordWrapWidth: 400,
 };
 
-/**
- * Short hint shown while the character stands at something interactable, on a
- * semi-transparent background for readability. Its origin is its top-right
- * corner, so it can be pinned to the top-right corner of the room.
- */
 export class InteractionText extends Container {
 	constructor(text: string) {
 		super();
@@ -35,4 +31,12 @@ export class InteractionText extends Container {
 
 		this.addChild(background, label);
 	}
+}
+
+export function showInteractionText(text: string) {
+	engine().navigation.showInteractionText(text);
+}
+
+export function hideInteractionText() {
+	engine().navigation.hideInteractionText();
 }

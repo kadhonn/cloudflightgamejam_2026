@@ -7,6 +7,11 @@ export interface StoryTextAware {
     showStoryText?(text: string):void;
 }
 
+export interface InteractionTextAware {
+    showInteractionText?(text: string):void;
+    hideInteractionText?():void;
+}
+
 /** Interface for app screens */
 export interface AppScreen extends Container {
   /** Show the screen */
@@ -34,7 +39,7 @@ export interface AppScreen extends Container {
 }
 
 /** Interface for app screens constructors */
-interface AppScreenConstructor {
+export interface AppScreenConstructor {
   new (): AppScreen;
   /** List of assets bundles required by the screen */
   assetBundles?: string[];
@@ -231,6 +236,18 @@ export class Navigation {
   public showStoryText(text: string) {
       if (this.currentScreen) {
           (this.currentScreen as any as StoryTextAware).showStoryText?.(text);
+      }
+  }
+
+  public showInteractionText(text: string) {
+      if (this.currentScreen) {
+          (this.currentScreen as any as InteractionTextAware).showInteractionText?.(text);
+      }
+  }
+
+  public hideInteractionText() {
+      if (this.currentScreen) {
+          (this.currentScreen as any as InteractionTextAware).hideInteractionText?.();
       }
   }
 }

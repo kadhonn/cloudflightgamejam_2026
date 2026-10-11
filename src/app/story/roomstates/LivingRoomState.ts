@@ -4,9 +4,6 @@ import { KitchenState } from "../entitystates/KitchenState";
 import { TableState } from "../entitystates/TableState";
 
 export class LivingRoomState {
-	public tableMessGrade = 0;
-	public showNote = false;
-
 	public bedroomDoorState: DoorState = new DoorState();
 	public bathroomDoorState: DoorState = new DoorState();
 	public kidsroomDoorState: DoorState = new DoorState();

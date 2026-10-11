@@ -9,7 +9,6 @@ import { Kitchen, type KitchenUpdateDelegate } from "../../interior/Kitchen";
 import { Table, type TableUpdateDelegate } from "../../interior/Table.ts";
 import { WALL_TILES } from "../../interior/WallTile";
 import { CouchTableMessState } from "../../story/entitystates/CouchTableState.ts";
-import type { DoorState } from "../../story/entitystates/DoorState.ts";
 import { LivingRoomState } from "../../story/roomstates/LivingRoomState";
 import { Button } from "../../ui/Button.ts";
 import { RoomScreenBase } from "../RoomScreenBase.ts";
@@ -20,7 +19,6 @@ export class LivingRoomScreen extends RoomScreenBase {
 	public static assetBundles = ["main"];
 
 	private state: LivingRoomState;
-	private floorTile!: FloorTile;
 
 	// not sure if we need these in the end, but they have been
 	// really helpful with testing/degugging UI updates on state change
@@ -128,22 +126,22 @@ export class LivingRoomScreen extends RoomScreenBase {
 		this.drawKitchen(container);
 
 		// doors stand in the wall, the number is the tile column they start at
-		let bedroomDoor = this.drawDoor(
+		const bedroomDoor = this.drawDoor(
 			this.state.bedroomDoorState,
 			container,
 			2,
 		);
-		let bathroomDoor = this.drawDoor(
+		const bathroomDoor = this.drawDoor(
 			this.state.bathroomDoorState,
 			container,
 			5,
 		);
-		let kidsroomDoor = this.drawDoor(
+		const kidsroomDoor = this.drawDoor(
 			this.state.kidsroomDoorState,
 			container,
 			16,
 		);
-		let exitDoor = this.drawDoor(this.state.exitDoorState, container, 20);
+		const exitDoor = this.drawDoor(this.state.exitDoorState, container, 20);
 
 		this.addInteractableForEntity(bedroomDoor, this.state.bedroomDoorState);
 		this.addInteractableForEntity(bathroomDoor, this.state.bathroomDoorState);

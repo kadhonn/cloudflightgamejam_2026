@@ -20,12 +20,8 @@ export class BedRoomScreen extends RoomScreenBase {
         this.drawRoom();
     }
 
-    public drawRoomEntities(container: Container) {
-        let exitDoor = this.drawDoor(
-            this.state.exitDoorState,
-            container,
-            2,
-        );
+	public drawRoomEntities(container: Container) {
+		const exitDoor = this.drawDoor(this.exitDoorState, container, 2);
 
         let bed = new Bed(this.state.bedState, 0, 0);
         this.positionEntityOntoEntityByTile(bed, container, 12, 2);

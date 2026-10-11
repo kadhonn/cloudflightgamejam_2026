@@ -11,6 +11,7 @@ import { Button } from "../../ui/Button.ts";
 import { BedRoomScreen } from "../bedroom/BedRoomScreen.ts";
 import { LivingRoomScreen } from "../livingroom/LivingRoomScreen.ts";
 import { MakeupGameScreen } from "../makeup/MakeupGameScreen.ts";
+import { transitionManager } from "../TransitionManager.ts";
 import { Bouncer } from "./Bouncer.ts";
 import { ExampleScreen } from "./ExampleScreen.ts";
 
@@ -93,10 +94,10 @@ export class MainScreen extends Container implements AppScreen {
 		this.mainMenuContainer.addChild(this.livingRoomScreenButton);
 
 		this.bedRoomScreenButton = new Button({
-			text: "Bed room",
+			text: "Start game",
 		});
 		this.bedRoomScreenButton.onPress.connect(() =>
-			engine().navigation.showScreen(BedRoomScreen),
+			transitionManager().transitionToNewIteration(),
 		);
 		this.bedRoomScreenButton.y = 200;
 		this.mainMenuContainer.addChild(this.bedRoomScreenButton);
