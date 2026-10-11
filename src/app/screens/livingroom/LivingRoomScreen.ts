@@ -13,6 +13,7 @@ import type { DoorState } from "../../story/entitystates/DoorState.ts";
 import { LivingRoomState } from "../../story/roomstates/LivingRoomState";
 import { Button } from "../../ui/Button.ts";
 import { RoomScreenBase } from "../RoomScreenBase.ts";
+import {Couch} from "../../interior/Couch.ts";
 
 export class LivingRoomScreen extends RoomScreenBase {
 	/** Assets bundles required by this screen */
@@ -165,6 +166,9 @@ export class LivingRoomScreen extends RoomScreenBase {
 		this.drawTable(container);
 
 		this.drawCouchTable(container);
+
+		let couch = new Couch();
+		this.positionEntityOntoEntityByTile(couch, container, 21,7.5)
 	}
 
 	public getWallTile() {

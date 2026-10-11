@@ -80,6 +80,11 @@ export function pills(): Texture {
 	return loadTextureFromRect("bathroom.png", 0, 32, 16, 16);
 }
 
+/** couch from couches.png. */
+export function couch(): Texture {
+	return loadTextureFromRect("couches.png", 624, 176, 16, 32);
+}
+
 // door lookup constants
 const DOOR_CELL_WIDTH = 48;
 export const DOOR_CELL_HEIGHT = 32;
