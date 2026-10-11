@@ -10,6 +10,9 @@ export abstract class Character {
 
 	abstract init(): Promise<void>;
 
+	/** The display object representing the character on screen, e.g. for positioning it. */
+	abstract get view(): Container;
+
 	abstract up(deltaTime: number): Promise<void>;
 
 	abstract down(deltaTime: number): Promise<void>;

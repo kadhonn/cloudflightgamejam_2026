@@ -1,7 +1,18 @@
-import { Container } from "pixi.js";
+import {
+	Container,
+	Graphics,
+	Rectangle,
+	Sprite,
+	Texture,
+	type Ticker,
+} from "pixi.js";
 import type { AppScreen } from "../../engine/navigation/navigation";
+import type { Character } from "../character/Character";
+import { CharacterController } from "../character/CharacterController";
+import { Her } from "../character/Her";
 import { FloorTile, type FloorType } from "../interior/FloorTile";
 import type { WallTile } from "../interior/WallTile";
+import { EntityBaseState } from "../story/entitystates/EntityStateBase";
 
 const TILE_SIZE = 16;
 const SCALE_FACTOR = 4;
@@ -13,13 +24,137 @@ const WALL_HEIGHT = 3;
 const TOP_LEFT_OFFSET_X = 30;
 const TOP_LEFT_OFFSET_Y = 200;
 
+// the idea here is that only the feet of the character collide with entities
+// to allow the character to stand before them and visually overlap
+// this is used to determine how much of the character sprite is considered feet
+// to determine that collision box
+const FEET_HEIGHT_RATIO = 0.1;
+
 export abstract class RoomScreenBase extends Container implements AppScreen {
 	public mainContainer: Container;
+	public her: Character;
+	public controller: CharacterController;
+
+	private obstacles: Rectangle[] = [];
 
 	constructor() {
 		super();
 		this.mainContainer = new Container();
 		this.addChild(this.mainContainer);
+
+		this.her = new Her();
+		this.controller = new CharacterController();
+	}
+
+	public async show() {
+		this.controller.activate();
+		// added last, so the character is rendered on top of the other entities
+		await this.her.show(this.mainContainer);
+		const { col, row } = this.getPlayerStartTile();
+		this.placeEntityByTile(this.her.view, col, row, false);
+	}
+
+	public async hide() {
+		this.controller.deactivate();
+	}
+
+	public update(ticker: Ticker) {
+		const view = this.her.view;
+		const previousX = view.x;
+		const previousY = view.y;
+
+		this.moveCharacter(ticker);
+
+		// prevent character from walking into walls/objects
+		if (!this.canStandAt(this.getFeetArea())) {
+			view.x = previousX;
+			view.y = previousY;
+		}
+	}
+
+	public addObstacleForEntity(entity: Container) {
+		const local =
+			entity instanceof Sprite && entity.texture !== Texture.EMPTY
+				? new Rectangle(0, 0, entity.texture.width, entity.texture.height)
+				: entity.getLocalBounds().rectangle;
+		this.obstacles.push(
+			new Rectangle(
+				entity.x + local.x * entity.scale.x,
+				entity.y + local.y * entity.scale.y,
+				local.width * entity.scale.x,
+				local.height * entity.scale.y,
+			),
+		);
+	}
+
+	public addObstacleByTile(
+		col: number,
+		row: number,
+		widthInTiles: number,
+		heightInTiles: number,
+	) {
+		const tile = TILE_SIZE * SCALE_FACTOR;
+		this.obstacles.push(
+			new Rectangle(
+				TOP_LEFT_OFFSET_X + col * tile,
+				TOP_LEFT_OFFSET_Y + row * tile,
+				widthInTiles * tile,
+				heightInTiles * tile,
+			),
+		);
+	}
+
+	/** The area the character's feet have to stay inside: the floor. */
+	private getFloorArea(): Rectangle {
+		return new Rectangle(
+			TOP_LEFT_OFFSET_X,
+			TOP_LEFT_OFFSET_Y,
+			ROOM_WIDTH * TILE_SIZE * SCALE_FACTOR,
+			(ROOM_HEIGHT - WALL_HEIGHT) * TILE_SIZE * SCALE_FACTOR,
+		);
+	}
+
+	// the character's feet boundary box
+	private getFeetArea(): Rectangle {
+		const view = this.her.view;
+		const bounds = view.getLocalBounds();
+		const width = bounds.width * view.scale.x;
+		const feetHeight = bounds.height * view.scale.y * FEET_HEIGHT_RATIO;
+		return new Rectangle(
+			view.x + bounds.minX * view.scale.x,
+			view.y + bounds.maxY * view.scale.y - feetHeight,
+			width,
+			feetHeight,
+		);
+	}
+
+	private canStandAt(feet: Rectangle): boolean {
+		return (
+			this.getFloorArea().containsRect(feet) &&
+			!this.obstacles.some((obstacle) => obstacle.intersects(feet))
+		);
+	}
+
+	private moveCharacter(ticker: Ticker) {
+		if (this.controller.keys.up.pressed) {
+			this.her.up(ticker.deltaTime);
+		} else if (this.controller.keys.down.pressed) {
+			this.her.down(ticker.deltaTime);
+		} else if (this.controller.keys.left.pressed) {
+			this.her.left(ticker.deltaTime);
+		} else if (this.controller.keys.right.pressed) {
+			this.her.right(ticker.deltaTime);
+		}
+	}
+
+	// Tile the character starts on when entering the room
+	// TODO: should probably be set by transition delegates
+	// maybe warrants a separate transision manager class
+	public getPlayerStartTile(): { col: number; row: number } {
+		return {
+			col: Math.floor(ROOM_WIDTH / 2),
+			row: Math.ceil((ROOM_HEIGHT - WALL_HEIGHT) / 2),
+		};
 	}
 
 	public async drawRoom() {
@@ -44,18 +179,34 @@ export abstract class RoomScreenBase extends Container implements AppScreen {
 		container.addChild(wallTile);
 	}
 
-	public placeEntityByTile(sprite: Container, col: number, row: number) {
+	public placeEntityByTile(
+		sprite: Container,
+		col: number,
+		row: number,
+		isObstacle = true,
+	) {
 		const bottom = sprite.getLocalBounds().maxY * sprite.scale.y;
 		sprite.x = TOP_LEFT_OFFSET_X + col * TILE_SIZE * SCALE_FACTOR;
 		sprite.y = TOP_LEFT_OFFSET_Y + row * TILE_SIZE * SCALE_FACTOR - bottom;
+		if (isObstacle) {
+			this.addObstacleForEntity(sprite);
+		}
 	}
 
-	public placeEntityByPixel(sprite: Container, x: number, y: number) {
+	public placeEntityByPixel(
+		sprite: Container,
+		x: number,
+		y: number,
+		isObstacle = true,
+	) {
 		// even when placing "by pixel" we want to use the scale factor so we tend to
 		// land on a multiple of SCALE_FACTOR (smallest positioning unit)
 		const bottom = sprite.getLocalBounds().maxY * sprite.scale.y;
 		sprite.x = TOP_LEFT_OFFSET_X + x * SCALE_FACTOR;
 		sprite.y = TOP_LEFT_OFFSET_Y + y * SCALE_FACTOR - bottom;
+		if (isObstacle) {
+			this.addObstacleForEntity(sprite);
+		}
 	}
 
 	public positionEntityOntoEntityByTile(
@@ -63,10 +214,14 @@ export abstract class RoomScreenBase extends Container implements AppScreen {
 		baseSprite: Container,
 		x: number,
 		y: number,
+		isObstacle = true,
 	) {
 		positionedSprite.x = x * TILE_SIZE * SCALE_FACTOR;
 		positionedSprite.y = y * TILE_SIZE * SCALE_FACTOR;
 		baseSprite.addChild(positionedSprite);
+		if (isObstacle) {
+			this.addObstacleForEntity(positionedSprite);
+		}
 	}
 
 	public positionEntityOntoEntityByPixel(
@@ -74,9 +229,13 @@ export abstract class RoomScreenBase extends Container implements AppScreen {
 		baseSprite: Container,
 		x: number,
 		y: number,
+		isObstacle = true,
 	) {
 		positionedSprite.x = x * SCALE_FACTOR;
 		positionedSprite.y = y * SCALE_FACTOR;
 		baseSprite.addChild(positionedSprite);
+		if (isObstacle) {
+			this.addObstacleForEntity(positionedSprite);
+		}
 	}
 }

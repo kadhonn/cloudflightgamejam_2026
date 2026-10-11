@@ -10,6 +10,10 @@ export class Her extends Character {
 		this.her = Sprite.from(Texture.from("her"));
 	}
 
+	get view() {
+		return this.her;
+	}
+
 	async init() {
 		this.screenContainer.addChild(this.her);
 	}
