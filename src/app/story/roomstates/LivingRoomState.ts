@@ -1,11 +1,11 @@
 import { CouchTableState } from "../entitystates/CouchTableState";
 import { DoorState } from "../entitystates/DoorState";
+import { KitchenState } from "../entitystates/KitchenState";
 import { TableState } from "../entitystates/TableState";
 
 export class LivingRoomState {
 	public tableMessGrade = 0;
 	public showNote = false;
-	public dirtyDishes = true;
 
 	public bedroomDoorState: DoorState = new DoorState();
 	public bathroomDoorState: DoorState = new DoorState();
@@ -15,6 +15,8 @@ export class LivingRoomState {
 	public tableState: TableState = new TableState();
 
 	public couchTableState: CouchTableState = new CouchTableState();
+
+	public kitchenState: KitchenState = new KitchenState();
 
 	public constructor() {
 		// we define the door positions here for convenience -
@@ -28,9 +30,8 @@ export class LivingRoomState {
 		this.exitDoorState.y = 200 - 26;
 		this.exitDoorState.x = 1200;
 
-		this.exitDoorState.isOpen = true;
-		this.bathroomDoorState.isOpen = true;
-		this.kidsroomDoorState.isOpen = true;
-		this.bedroomDoorState.isOpen = true;
+		// TODO: placeholder text, replace with the real story text
+		this.kitchenState.isInteractable = true;
+		this.kitchenState.interactionText = "The dishes are piling up...";
 	}
 }

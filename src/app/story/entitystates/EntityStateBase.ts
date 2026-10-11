@@ -1,5 +1,5 @@
+import { showStoryText } from "../../ui/StoryText.ts";
 import type { StoryState } from "../storystate/StoryState";
-import {showStoryText} from "../../ui/StoryText.ts";
 
 export type StoryProgressionDelegate = (state: StoryState) => void;
 

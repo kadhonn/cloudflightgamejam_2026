@@ -1,4 +1,4 @@
-type ControlKey = "up" | "down" | "left" | "right";
+type ControlKey = "up" | "down" | "left" | "right" | "interact";
 
 const keyMap: { [key: string]: ControlKey } = {
 	KeyW: "up",
@@ -9,6 +9,9 @@ const keyMap: { [key: string]: ControlKey } = {
 	ArrowDown: "down",
 	KeyD: "right",
 	ArrowRight: "right",
+	KeyE: "interact",
+	Space: "interact",
+	Enter: "interact",
 };
 
 type KeyControl = {
@@ -62,6 +65,7 @@ export class CharacterController {
 			left: { pressed: false, doubleTap: false, timestamp: 0 },
 			down: { pressed: false, doubleTap: false, timestamp: 0 },
 			right: { pressed: false, doubleTap: false, timestamp: 0 },
+			interact: { pressed: false, doubleTap: false, timestamp: 0 },
 		};
 	}
 

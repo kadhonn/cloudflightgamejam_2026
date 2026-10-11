@@ -1,6 +1,6 @@
 import type { TextOptions, TextStyleOptions } from "pixi.js";
 import { Text } from "pixi.js";
-import {engine} from "../getEngine.ts";
+import { engine } from "../getEngine.ts";
 
 const defaultLabelStyle: Partial<TextStyleOptions> = {
 	fontFamily: "Arial Rounded MT Bold",

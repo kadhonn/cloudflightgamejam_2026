@@ -40,7 +40,9 @@ export class LivingRoomScreen extends RoomScreenBase {
 		super();
 
 		this.state = state;
-		this.state.dirtyDishes = true;
+
+		this.state.kitchenState.entityInteractionDelegate = () =>
+			this.showStoryText("You interacted with the sink!");
 
 		this.drawRoom();
 
@@ -53,7 +55,8 @@ export class LivingRoomScreen extends RoomScreenBase {
 		this.testDishesButton.y = 300;
 		this.testDishesButton.x = 100;
 		this.testDishesButton.onPress.connect(() => {
-			this.state.dirtyDishes = !this.state.dirtyDishes;
+			this.state.kitchenState.dirtyDishes =
+				!this.state.kitchenState.dirtyDishes;
 			this.kitchenUpdater(this.state);
 		});
 		this.addChild(this.testDishesButton);
@@ -124,30 +127,39 @@ export class LivingRoomScreen extends RoomScreenBase {
 		this.drawKitchen(container);
 
 		// doors stand in the wall, the number is the tile column they start at
-		var bedroomDoor = this.drawDoor(this.state.bedroomDoorState, container, 2);
-		var bathroomDoor = this.drawDoor(
+		var bedroomDoor = await this.drawDoor(
+			this.state.bedroomDoorState,
+			container,
+			2,
+		);
+		var bathroomDoor = await this.drawDoor(
 			this.state.bathroomDoorState,
 			container,
 			5,
 		);
-		var kidsroomDoor = this.drawDoor(
+		var kidsroomDoor = await this.drawDoor(
 			this.state.kidsroomDoorState,
 			container,
 			16,
 		);
-		var exitDoor = this.drawDoor(this.state.exitDoorState, container, 20);
+		var exitDoor = await this.drawDoor(this.state.exitDoorState, container, 20);
+
+		this.addInteractableForEntity(bedroomDoor, this.state.bedroomDoorState);
+		this.addInteractableForEntity(bathroomDoor, this.state.bathroomDoorState);
+		this.addInteractableForEntity(kidsroomDoor, this.state.kidsroomDoorState);
+		this.addInteractableForEntity(exitDoor, this.state.exitDoorState);
 
 		this.bedroomDoorUpdater = async (state) => {
-			(await bedroomDoor).updateState(state);
+			bedroomDoor.updateState(state);
 		};
 		this.bathroomDoorUpdater = async (state) => {
-			(await bathroomDoor).updateState(state);
+			bathroomDoor.updateState(state);
 		};
 		this.kidsroomDoorUpdater = async (state) => {
-			(await kidsroomDoor).updateState(state);
+			kidsroomDoor.updateState(state);
 		};
 		this.exitDoorUpdater = async (state) => {
-			(await exitDoor).updateState(state);
+			exitDoor.updateState(state);
 		};
 
 		this.drawTable(container);
@@ -169,6 +181,11 @@ export class LivingRoomScreen extends RoomScreenBase {
 		this.kitchenUpdater = (state) => {
 			kitchen.updateState(state);
 		};
+		// only the sink is interactable, not the whole kitchen
+		this.addInteractableForRectangle(
+			kitchen.getSinkArea(),
+			this.state.kitchenState,
+		);
 	}
 
 	public async drawDoor(
@@ -189,6 +206,7 @@ export class LivingRoomScreen extends RoomScreenBase {
 		this.tableUpdater = (state) => {
 			table.updateState(state);
 		};
+		this.addInteractableForEntity(table, this.state.tableState);
 	}
 
 	public async drawCouchTable(container: Container) {
@@ -198,5 +216,6 @@ export class LivingRoomScreen extends RoomScreenBase {
 		this.couchTableUpdater = (state) => {
 			couchTable.updateState(state);
 		};
+		this.addInteractableForEntity(couchTable, this.state.couchTableState);
 	}
 }
