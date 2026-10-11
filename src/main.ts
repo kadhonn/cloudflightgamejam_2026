@@ -10,7 +10,6 @@ import { CreationEngine } from "./engine/engine.ts";
  */
 import "@pixi/sound";
 import { Assets } from "pixi.js";
-import {LivingRoomScreen} from "./app/screens/livingroom/LivingRoomScreen.ts";
 
 // import "@esotericsoftware/spine-pixi-v8";
 
@@ -40,8 +39,8 @@ setEngine(engine);
 	await engine.navigation.showScreen(LoadScreen);
 	// Show the main screen once the load screen is dismissed
 	if (userSettings.skipIntro) {
-		await engine.navigation.showScreen(LivingRoomScreen);
+		await engine.navigation.showScreen(MainScreen);
 	} else {
-		await engine.navigation.showScreen(LivingRoomScreen);
+		await engine.navigation.showScreen(IntroScreen);
 	}
 })();
