@@ -139,7 +139,7 @@ export class LivingRoomScreen extends RoomScreenBase {
 
 	public drawTV(container: Container) {
 		var tv = new TV(this.state.tvState, 0, 0);
-		this.positionEntityOntoEntityByTile(tv, container, 21, 6);
+		this.positionEntityOntoEntityByTile(tv, container, 19, 6);
 		this.tvUpdater = (state) => {
 			tv.updateState(state);
 		};
