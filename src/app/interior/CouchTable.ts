@@ -29,6 +29,7 @@ export class CouchTable extends Sprite {
 		var messContainerOptions: ContainerOptions = {
 			x: 0,
 			y: 0,
+			scale: 0.5,
 		};
 		this.messContainer = new Container(messContainerOptions);
 		this.addChild(this.messContainer);
@@ -65,21 +66,21 @@ export class CouchTable extends Sprite {
 				break;
 			case CouchTableMessState.LITTLE: {
 				const beerBottle = this.getBeerBottleSprite();
-				beerBottle.x = 10;
-				beerBottle.y = 40;
+				beerBottle.x = 1;
+				beerBottle.y = 4;
 				this.messContainer.addChild(beerBottle);
 				break;
 			}
 			case CouchTableMessState.MEDIUM: {
 				const beerBottle1 = this.getBeerBottleSprite();
-				beerBottle1.x = 10;
-				beerBottle1.y = 20;
+				beerBottle1.x = 2;
+				beerBottle1.y = 4;
 				const beerBottle2 = this.getBeerBottleSprite();
-				beerBottle2.x = 18;
-				beerBottle2.y = 25;
+				beerBottle2.x = 15;
+				beerBottle2.y = 0;
 				const beerBottle3 = this.getBeerBottleSprite();
-				beerBottle3.x = 40;
-				beerBottle3.y = 23;
+				beerBottle3.x = 15;
+				beerBottle3.y = 15;
 				beerBottle3.rotation = Math.PI / 4;
 				this.messContainer.addChild(beerBottle1);
 				this.messContainer.addChild(beerBottle2);
@@ -89,17 +90,17 @@ export class CouchTable extends Sprite {
 			default: {
 				//state LOTS
 				const beerBottle1 = this.getBeerBottleSprite();
-				beerBottle1.x = 30;
-				beerBottle1.y = 18;
+				beerBottle1.x = 15;
+				beerBottle1.y = -2;
 				const beerBottle2 = this.getBeerBottleSprite();
-				beerBottle2.x = 38;
-				beerBottle2.y = 22;
+				beerBottle2.x = 10;
+				beerBottle2.y = -4;
 				const pizzaBox = this.getBeerPizzaBoxSprite();
-				pizzaBox.x = 22;
-				pizzaBox.y = 60;
+				pizzaBox.x = 0;
+				pizzaBox.y = 5;
 				const whiskeyBottle = this.getWhiskeyBottleSprite();
 				whiskeyBottle.x = 12;
-				whiskeyBottle.y = 8;
+				whiskeyBottle.y = 18;
 				this.messContainer.addChild(beerBottle1);
 				this.messContainer.addChild(beerBottle2);
 				this.messContainer.addChild(pizzaBox);
