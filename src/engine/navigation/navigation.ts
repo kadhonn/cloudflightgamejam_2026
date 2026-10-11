@@ -3,6 +3,10 @@ import { Assets, BigPool, Container } from "pixi.js";
 
 import type { CreationEngine } from "../engine.ts";
 
+export interface StoryTextAware {
+    showStoryText?(text: string):void;
+}
+
 /** Interface for app screens */
 export interface AppScreen extends Container {
   /** Show the screen */
@@ -222,5 +226,11 @@ export class Navigation {
     this.currentScreen?.focus?.();
     this.currentPopup?.focus?.();
     this.background?.focus?.();
+  }
+
+  public showStoryText(text: string) {
+      if (this.currentScreen) {
+          (this.currentScreen as any as StoryTextAware).showStoryText?.(text);
+      }
   }
 }

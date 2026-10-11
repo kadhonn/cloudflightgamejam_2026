@@ -13,6 +13,7 @@ import { Her } from "../character/Her";
 import { FloorTile, type FloorType } from "../interior/FloorTile";
 import type { WallTile } from "../interior/WallTile";
 import { EntityBaseState } from "../story/entitystates/EntityStateBase";
+import {StoryText} from "../ui/StoryText.ts";
 
 const TILE_SIZE = 16;
 const SCALE_FACTOR = 4;
@@ -36,6 +37,7 @@ export abstract class RoomScreenBase extends Container implements AppScreen {
 	public controller: CharacterController;
 
 	private obstacles: Rectangle[] = [];
+    private storyText: StoryText | null = null;
 
 	constructor() {
 		super();
@@ -238,4 +240,14 @@ export abstract class RoomScreenBase extends Container implements AppScreen {
 			this.addObstacleForEntity(positionedSprite);
 		}
 	}
+    public showStoryText(text: string): void {
+        if (this.storyText !== null) {
+            this.removeChild(this.storyText);
+        }
+        this.storyText = new StoryText();
+        this.storyText.text = text;
+        this.storyText.x = this.width / 2;
+        this.storyText.y = this.height - 100;
+        this.addChild(this.storyText);
+    }
 }

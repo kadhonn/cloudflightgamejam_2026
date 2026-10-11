@@ -1,4 +1,5 @@
 import type { StoryState } from "../storystate/StoryState";
+import {showStoryText} from "../../ui/StoryText.ts";
 
 export type StoryProgressionDelegate = (state: StoryState) => void;
 
@@ -33,7 +34,7 @@ export abstract class EntityBaseState {
 		} else {
 			// writing interaction text is a sensible default we can use as shorthand quite a lot
 			if (this.interactionText.length > 0) {
-				//Todo: implement temporary showing of interactionText
+				showStoryText(this.interactionText);
 			}
 		}
 	}
