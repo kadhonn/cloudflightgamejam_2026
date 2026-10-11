@@ -4,11 +4,8 @@ import {
 	Sprite,
 	type Texture,
 } from "pixi.js";
-import {
-	tvOff,
-	tvOn
-} from "../sprites/Sprites"
-import { TVState } from "../story/entitystates/TVState";
+import { tvOff, tvOn } from "../sprites/Sprites";
+import type { TVState } from "../story/entitystates/TVState";
 
 export type TVUpdateDelegate = (state: TVState) => void;
 

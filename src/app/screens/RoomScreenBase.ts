@@ -1,13 +1,21 @@
-import {Container, PoolItem, PoolItemConstructor, Rectangle, Sprite, Texture, type Ticker} from "pixi.js";
-import {AppScreen} from "../../engine/navigation/navigation";
-import  { Character } from "../character/Character";
+import {
+	Container,
+	type PoolItem,
+	PoolItemConstructor,
+	Rectangle,
+	Sprite,
+	Texture,
+	type Ticker,
+} from "pixi.js";
+import type { AppScreen } from "../../engine/navigation/navigation";
+import type { Character } from "../character/Character";
 import { CharacterController } from "../character/CharacterController";
 import { Her } from "../character/Her";
 import { Door } from "../interior/Door.ts";
 import { FloorTile, type FloorType } from "../interior/FloorTile";
-import  { WallTile } from "../interior/WallTile";
-import  { EntityBaseState } from "../story/entitystates/EntityStateBase";
+import type { WallTile } from "../interior/WallTile";
 import type { DoorState } from "../story/entitystates/DoorState.ts";
+import type { EntityBaseState } from "../story/entitystates/EntityStateBase";
 import { storyEngine } from "../story/storyengine/StoryEngine.ts";
 import { InteractionText } from "../ui/InteractionText.ts";
 import { StoryText } from "../ui/StoryText.ts";
@@ -33,7 +41,10 @@ const INTERACTION_TEXT_OFFSET = 16;
 // to determine that collision box
 const FEET_HEIGHT_RATIO = 0.1;
 
-export abstract class RoomScreenBase extends Container implements AppScreen, PoolItem {
+export abstract class RoomScreenBase
+	extends Container
+	implements AppScreen, PoolItem
+{
 	public mainContainer: Container;
 	public her: Character;
 	public controller: CharacterController;
@@ -83,9 +94,7 @@ export abstract class RoomScreenBase extends Container implements AppScreen, Poo
 		if (interactionContext !== this.currentInteractionContext) {
 			this.currentInteractionContext = interactionContext;
 			if (interactionContext) {
-				this.showInteractionText(
-					interactionContext.interactionHint,
-				);
+				this.showInteractionText(interactionContext.interactionHint);
 			} else {
 				this.hideInteractionText();
 			}

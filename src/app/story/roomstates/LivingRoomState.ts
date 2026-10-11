@@ -16,7 +16,7 @@ export class LivingRoomState {
 
 	public kitchenState: KitchenState = new KitchenState();
 
-    public tvState: TVState = new TVState();
+	public tvState: TVState = new TVState();
 
 	public constructor() {
 		// we define the door positions here for convenience -

@@ -21,7 +21,7 @@ export class StoryEngine {
 		this.storyState = iteration;
 	}
 
-    public applyNextStorySlice() {
-        this.storyState.applyNextStorySlice();
-    }
+	public applyNextStorySlice() {
+		this.storyState.applyNextStorySlice();
+	}
 }

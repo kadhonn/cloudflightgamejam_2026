@@ -47,7 +47,7 @@ export abstract class EntityBaseState {
 			// if we are progressing the story this means we load the next story slice
 			// and execute additional custom progression behavior
 			story.applyNextStorySlice();
-			if(this.storyProgressionDelegate) {
+			if (this.storyProgressionDelegate) {
 				this.storyProgressionDelegate(story);
 			}
 

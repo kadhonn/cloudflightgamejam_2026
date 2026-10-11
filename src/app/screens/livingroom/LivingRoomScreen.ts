@@ -7,12 +7,12 @@ import { Door, type DoorUpdateDelegate } from "../../interior/Door";
 import { type FloorTile, FloorType } from "../../interior/FloorTile";
 import { Kitchen, type KitchenUpdateDelegate } from "../../interior/Kitchen";
 import { Table, type TableUpdateDelegate } from "../../interior/Table.ts";
+import { TV, type TVUpdateDelegate } from "../../interior/TV.ts";
 import { WALL_TILES } from "../../interior/WallTile";
 import { LivingRoomState } from "../../story/roomstates/LivingRoomState";
 import { RoomScreenBase } from "../RoomScreenBase.ts";
 import {Couch} from "../../interior/Couch.ts";
 import { storyEngine } from "../../story/storyengine/StoryEngine.ts";
-import { TV, TVUpdateDelegate } from "../../interior/TV.ts";
 
 export class LivingRoomScreen extends RoomScreenBase {
 	/** Assets bundles required by this screen */
@@ -29,7 +29,7 @@ export class LivingRoomScreen extends RoomScreenBase {
 	private exitDoorUpdater: DoorUpdateDelegate = (doorState) => {};
 	private tableUpdater: TableUpdateDelegate = (tableState) => {};
 	private couchTableUpdater: CouchTableUpdateDelegate = (couchTableState) => {};
-    private tvUpdater: TVUpdateDelegate = (tvState) => {};
+	private tvUpdater: TVUpdateDelegate = (tvState) => {};
 
 	constructor() {
 		super();
@@ -95,7 +95,7 @@ export class LivingRoomScreen extends RoomScreenBase {
 		this.exitDoorUpdater(this.state.exitDoorState);
 		this.tableUpdater(this.state.tableState);
 		this.couchTableUpdater(this.state.couchTableState);
-        this.tvUpdater(this.state.tvState);
+		this.tvUpdater(this.state.tvState);
 	}
 
 	public getWallTile() {

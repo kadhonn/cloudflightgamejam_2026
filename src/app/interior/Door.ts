@@ -1,4 +1,10 @@
-import {Container, Graphics, Sprite, type SpriteOptions, type Texture} from "pixi.js";
+import {
+	Container,
+	Graphics,
+	Sprite,
+	type SpriteOptions,
+	type Texture,
+} from "pixi.js";
 import {
 	DOOR_CELL_HEIGHT,
 	DOOR_WIDTH,

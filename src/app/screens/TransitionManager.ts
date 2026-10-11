@@ -19,9 +19,9 @@ type RoomDictionary<T> = {
 export enum TransitionTargetType {
 	BEDROOM,
 	LIVINGROOM,
-    KIDS,
+	KIDS,
 	WAKEUP,
-    MAKEUP,
+	MAKEUP,
 }
 
 const LIVING_ROOM_ENTRY_TILES: RoomDictionary<number[]> = {
@@ -64,10 +64,10 @@ const DESTINATION_SCREEN: RoomDictionary<() => Promise<AppScreenConstructor>> =
 			(await import("./bedroom/BedRoomScreen")).BedRoomScreen,
 		[TransitionTargetType.WAKEUP]: async () =>
 			(await import("./bedroom/BedRoomScreen")).BedRoomScreen,
-        [TransitionTargetType.MAKEUP]: async () =>
-            (await import("../screens/makeup/MakeupGameScreen")).MakeupGameScreen,
-        [TransitionTargetType.KIDS]: async () =>
-            (await import("./kidsroom/KidsRoomScreen")).KidsRoomScreen,
+		[TransitionTargetType.MAKEUP]: async () =>
+			(await import("../screens/makeup/MakeupGameScreen")).MakeupGameScreen,
+		[TransitionTargetType.KIDS]: async () =>
+			(await import("./kidsroom/KidsRoomScreen")).KidsRoomScreen,
 	};
 
 export class TransitionManager {
@@ -77,14 +77,17 @@ export class TransitionManager {
 
 	// loads the code of all screens in the background, so the first transition
 	// into a room doesn't have to wait for it (import() results are cached)
-    // this is an attempt to make kids room load faster on first enter
+	// this is an attempt to make kids room load faster on first enter
 	public preloadScreens() {
 		for (const loadScreen of Object.values(DESTINATION_SCREEN)) {
 			void loadScreen();
 		}
 	}
 
-	public async transition(from: TransitionTargetType, to: TransitionTargetType) {
+	public async transition(
+		from: TransitionTargetType,
+		to: TransitionTargetType,
+	) {
 		if (from === to && from !== TransitionTargetType.WAKEUP) {
 			throw "Invalid transition!";
 		}
@@ -98,7 +101,11 @@ export class TransitionManager {
 			storyEngine().loadIteration(storyEngine().storyState.getNextIteration());
 		}
 		storyEngine().spawnTile =
-			DESTINATION_TILE_SELECTION[TransitionTargetType.WAKEUP][TransitionTargetType.WAKEUP];
-		engine().navigation.showScreen(await DESTINATION_SCREEN[TransitionTargetType.WAKEUP]());
+			DESTINATION_TILE_SELECTION[TransitionTargetType.WAKEUP][
+				TransitionTargetType.WAKEUP
+			];
+		engine().navigation.showScreen(
+			await DESTINATION_SCREEN[TransitionTargetType.WAKEUP](),
+		);
 	}
 }
