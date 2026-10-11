@@ -39,13 +39,14 @@ export class Table extends Container {
     }
 
     public updateState(state: TableState) {
+        this.noteOverlay.removeChildren();
         if (state.hasNote && state.noteText) {
-            const noteGraphics = new Graphics()
-                .rect(0, 0, NOTE_WIDTH, NOTE_HEIGHT)
-                .fill("yellow");
-            this.noteOverlay.addChild(noteGraphics);
-        } else {
-            this.noteOverlay.removeChildren();
+            let noteSprite = Sprite.from("note.png");
+            noteSprite.texture.source.scaleMode = "nearest";
+            noteSprite.x = 7;
+            noteSprite.y = 10;
+            noteSprite.scale = 0.8;
+            this.noteOverlay.addChild(noteSprite);
         }
     }
 }
