@@ -60,6 +60,16 @@ export function whiskeyBottle(): Texture {
 	return loadTextureFromRect("Messy_Furniture_16x16.png", 371, 288, 8, 15);
 }
 
+/** bottom of bed, 1st from beds.png. */
+export function bedBottom(): Texture {
+	return loadTextureFromRect("beds16x16.png", 0, 16, 32, 32);
+}
+
+/** top of bed, first of top beds, in red, from beds.png. */
+export function bedTop(): Texture {
+	return loadTextureFromRect("beds16x16.png", 384, 144, 32, 32);
+}
+
 // door lookup constants
 const DOOR_CELL_WIDTH = 48;
 export const DOOR_CELL_HEIGHT = 32;

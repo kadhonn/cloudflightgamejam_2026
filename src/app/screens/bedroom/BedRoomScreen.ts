@@ -2,29 +2,29 @@ import type { Container } from "pixi.js";
 import { FloorType } from "../../interior/FloorTile";
 import { WALL_TILES } from "../../interior/WallTile";
 import { RoomScreenBase } from "../RoomScreenBase";
-import {Door} from "../../interior/Door.ts";
-import {DoorState} from "../../story/entitystates/DoorState.ts";
+import {Bed} from "../../interior/Bed.ts";
+import {BedRoomState} from "../../story/roomstates/BedRoomState.ts";
 
 export class BedRoomScreen extends RoomScreenBase {
 	/** Assets bundles required by this screen */
 	public static assetBundles = ["main"];
-	public exitDoorState: DoorState = new DoorState();
+	public state: BedRoomState = new BedRoomState();
 
 	constructor() {
 		super();
-
-		this.exitDoorState.y = 200 - 26;
-		this.exitDoorState.x = 230;
 
 		this.drawRoom();
 	}
 
 	public drawRoomEntities(container: Container) {
 		let exitDoor = this.drawDoor(
-			this.exitDoorState,
+			this.state.exitDoorState,
 			container,
 			2,
 		);
+
+		let bed = new Bed(this.state.bedState, 0, 0);
+		this.positionEntityOntoEntityByTile(bed, container, 12, 2);
 	}
 
 	public getWallTile() {
