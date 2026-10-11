@@ -1,4 +1,5 @@
 import type { Container } from "pixi.js";
+import { Couch } from "../../interior/Couch.ts";
 import {
 	CouchTable,
 	type CouchTableUpdateDelegate,
@@ -9,10 +10,9 @@ import { Kitchen, type KitchenUpdateDelegate } from "../../interior/Kitchen";
 import { Table, type TableUpdateDelegate } from "../../interior/Table.ts";
 import { TV, type TVUpdateDelegate } from "../../interior/TV.ts";
 import { WALL_TILES } from "../../interior/WallTile";
-import { LivingRoomState } from "../../story/roomstates/LivingRoomState";
-import { RoomScreenBase } from "../RoomScreenBase.ts";
-import {Couch} from "../../interior/Couch.ts";
+import type { LivingRoomState } from "../../story/roomstates/LivingRoomState";
 import { storyEngine } from "../../story/storyengine/StoryEngine.ts";
+import { RoomScreenBase } from "../RoomScreenBase.ts";
 
 export class LivingRoomScreen extends RoomScreenBase {
 	/** Assets bundles required by this screen */
@@ -82,8 +82,8 @@ export class LivingRoomScreen extends RoomScreenBase {
 
 		this.drawCouchTable(container);
 
-		let couch = new Couch();
-		this.positionEntityOntoEntityByTile(couch, container, 21,7.5)
+		const couch = new Couch();
+		this.positionEntityOntoEntityByTile(couch, container, 21, 7.5);
 		this.drawTV(container);
 	}
 

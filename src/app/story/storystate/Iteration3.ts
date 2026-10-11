@@ -34,7 +34,8 @@ export class Iteration3 extends StoryState {
 		this.livingRoomState.tableState.hasNote = false;
 		this.livingRoomState.kitchenState.dirtyDishes = true;
 		this.livingRoomState.kitchenState.interactionHint = "Do the dishes";
-		this.livingRoomState.kitchenState.interactionText = "She should probably turn off the TV first.";
+		this.livingRoomState.kitchenState.interactionText =
+			"She should probably turn off the TV first.";
 		this.livingRoomState.kitchenState.progressesStoryOnInteraction = false;
 		this.livingRoomState.kitchenState.isInteractable = true;
 		this.livingRoomState.couchTableState.messState = CouchTableMessState.NONE;
