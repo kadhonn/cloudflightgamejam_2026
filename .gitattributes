@@ -1,0 +1,2 @@
+# Keep LF everywhere so checkouts match what Biome writes, regardless of core.autocrlf
+* text=auto eol=lf

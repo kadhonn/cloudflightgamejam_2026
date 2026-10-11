@@ -1,0 +1,8 @@
+#!/bin/sh
+# Refuses commits whose staged files Biome cannot parse or that are not formatted,
+# so a broken file can't reach main again. Enabled via `npm install` (prepare script).
+if ! npx --no-install biome check --staged --no-errors-on-unmatched --diagnostic-level=error; then
+	echo ""
+	echo "pre-commit: Biome check failed. Run 'npm run format', review the result and stage it again."
+	exit 1
+fi
